@@ -1,0 +1,15 @@
+services:
+  ifrn-chamados-backend:
+    build:
+      target: development
+    volumes:
+      - ..:/app:z
+    env_file:
+      - ../.envs/.env.dev
+
+  ifrn-chamados-postgres:
+    volumes:
+      - pgdata-ifrn-chamados-dev:/var/lib/postgresql/data
+
+volumes:
+  pgdata-ifrn-chamados-dev:
