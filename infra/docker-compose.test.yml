@@ -1,0 +1,10 @@
+services:
+  ifrn-chamados-backend:
+    build:
+      target: test
+    env_file:
+      - ../.envs/.env.test
+
+  ifrn-chamados-postgres:
+    tmpfs:
+      - /var/lib/postgresql/data
