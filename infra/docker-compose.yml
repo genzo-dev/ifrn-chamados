@@ -1,3 +1,5 @@
+name: ifrn-chamados
+
 services:
   ifrn-chamados-backend:
     build:
