@@ -1,6 +1,9 @@
-package com.ifrn.chamados.entity;
+package com.ifrn.chamados.department;
 
 import java.util.List;
+
+import com.ifrn.chamados.category.Category;
+import com.ifrn.chamados.users.Users;
 
 import jakarta.persistence.*;
 import lombok.Getter;

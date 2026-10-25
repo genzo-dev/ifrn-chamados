@@ -1,12 +1,14 @@
-package com.ifrn.chamados.entity;
+package com.ifrn.chamados.ticket;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import java.time.LocalDateTime;
 
-import com.ifrn.chamados.enums.Priority;
-import com.ifrn.chamados.enums.Status;
+import com.ifrn.chamados.category.Category;
+import com.ifrn.chamados.common.enums.Priority;
+import com.ifrn.chamados.common.enums.Status;
+import com.ifrn.chamados.users.Users;
 
 @Entity
 @Getter

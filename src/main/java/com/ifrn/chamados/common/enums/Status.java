@@ -1,4 +1,4 @@
-package com.ifrn.chamados.enums;
+package com.ifrn.chamados.common.enums;
 
 public enum Status {
   ABERTO,

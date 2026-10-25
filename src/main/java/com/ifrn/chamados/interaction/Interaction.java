@@ -1,9 +1,12 @@
-package com.ifrn.chamados.entity;
+package com.ifrn.chamados.interaction;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import java.time.LocalDateTime;
+
+import com.ifrn.chamados.ticket.Ticket;
+import com.ifrn.chamados.users.Users;
 
 @Entity
 @Getter

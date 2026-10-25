@@ -1,10 +1,11 @@
-package com.ifrn.chamados.entity;
+package com.ifrn.chamados.users;
+
+import com.ifrn.chamados.common.enums.UserType;
+import com.ifrn.chamados.department.Department;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-
-import com.ifrn.chamados.enums.UserType;
 
 @Entity
 @Getter

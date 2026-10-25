@@ -1,4 +1,6 @@
-package com.ifrn.chamados.entity;
+package com.ifrn.chamados.category;
+
+import com.ifrn.chamados.department.Department;
 
 import jakarta.persistence.*;
 import lombok.Getter;
