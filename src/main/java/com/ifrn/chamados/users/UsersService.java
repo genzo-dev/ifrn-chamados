@@ -1,5 +1,7 @@
 package com.ifrn.chamados.users;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -48,5 +50,10 @@ public class UsersService {
         user.setDepartment(department);
 
         return usersRepository.save(user);
+    }
+
+    public Page<Users> findAllFiltered(String name, UserType userType, Long departmentId, Pageable pageable) {
+        String searchName = (name != null && !name.isBlank()) ? name.trim() : null;
+        return usersRepository.findWithFilters(searchName, userType, departmentId, pageable);
     }
 }
