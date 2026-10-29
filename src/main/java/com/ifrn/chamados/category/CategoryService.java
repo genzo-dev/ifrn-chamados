@@ -7,6 +7,8 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.stereotype.Service;
 
 import com.ifrn.chamados.category.dto.CategoryCreateDTO;
+import com.ifrn.chamados.category.dto.CategoryUpdateDTO;
+import com.ifrn.chamados.common.utils.EntityFinder;
 import com.ifrn.chamados.department.Department;
 import com.ifrn.chamados.department.DepartmentRepository;
 
@@ -27,8 +29,7 @@ public class CategoryService {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Já existe uma categoria com a mesma descrição.");
         }
 
-        Department department = departmentRepository.findById(dto.department_id())
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Departamento não encontrado"));
+        Department department = EntityFinder.findByIdOrThrow(departmentRepository, dto.department_id(), "Departamento");
 
         Category category = new Category();
         category.setName(dto.name());
@@ -52,5 +53,38 @@ public class CategoryService {
 
         return categoryRepository.findAll(pageable);
     }
+
+    public Category findById(Long id) {
+        return EntityFinder.findByIdOrThrow(categoryRepository, id, "Categoria");
+    }
+
+    public Category updateById(Long id, CategoryUpdateDTO dto) {
+        Category category = EntityFinder.findByIdOrThrow(categoryRepository, id, "Categoria");
+
+        if (dto.name() != null && !dto.name().isBlank()) {
+            category.setName(dto.name());
+        }
+
+        if (dto.description() != null && !dto.description().isBlank()) {
+            category.setDescription(dto.description());;
+        }
+
+        if (dto.departmentId() != null) {
+            Department department = EntityFinder.findByIdOrThrow(departmentRepository, id, "Departamento");
+            category.setDepartment(department);
+        }
+
+        return categoryRepository.save(category);
+  }
+
+    public Category deleteById(Long id) {
+        // TODO: adicionar regra que impeça exclusão em caso de chamado (ticket) vinculado 
+
+        Category category = EntityFinder.findByIdOrThrow(categoryRepository, id, "Categoria");
+
+        categoryRepository.delete(category);
+
+        return category;
+  }
 }
 

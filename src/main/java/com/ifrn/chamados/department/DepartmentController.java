@@ -3,6 +3,7 @@ package com.ifrn.chamados.department;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ifrn.chamados.category.dto.CategoryResponseDTO;
 import com.ifrn.chamados.department.dto.DepartmentRequestDTO;
 import com.ifrn.chamados.department.dto.DepartmentResponseDTO;
 import com.ifrn.chamados.department.dto.DepartmentUpdateDTO;
@@ -12,6 +13,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
 
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
@@ -28,7 +31,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
-@RequestMapping("/department")
+@RequestMapping("/departments")
 @RequiredArgsConstructor
 public class DepartmentController {
   private final DepartmentService departmentService;
@@ -82,6 +85,22 @@ public class DepartmentController {
   public ResponseEntity<DepartmentResponseDTO> findById(@PathVariable Long id) {
     Department searched = departmentService.findById(id);
     return ResponseEntity.ok(DepartmentResponseDTO.fromEntity(searched));
+  }
+
+  @GetMapping("{id}/categories")
+  @ApiResponse(
+    responseCode = "200", 
+    description = "Categorias encontradas com sucesso", 
+    content = @Content(schema = @Schema(hidden = true))
+  )
+  @ApiResponse(
+    responseCode = "404", 
+    description = "Departamento não encontrado", 
+    content = @Content(schema = @Schema(hidden = true))
+  )
+  public ResponseEntity<List<CategoryResponseDTO>> findCategoriesByDepartment(@PathVariable Long id) {
+    List<CategoryResponseDTO> categories = departmentService.findCategoriesByDepartment(id).stream().map(CategoryResponseDTO::fromEntity).toList();
+    return ResponseEntity.ok(categories);
   }
 
   @PatchMapping("{id}")
