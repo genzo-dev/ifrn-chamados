@@ -11,6 +11,7 @@ import com.ifrn.chamados.common.utils.EntityFinder;
 import com.ifrn.chamados.department.Department;
 import com.ifrn.chamados.department.DepartmentRepository;
 import com.ifrn.chamados.users.dto.UserCreateDTO;
+import com.ifrn.chamados.users.dto.UserUpdateDTO;
 
 import lombok.RequiredArgsConstructor;
 
@@ -59,5 +60,32 @@ public class UsersService {
 
     public Users findById(Long id) {
         return EntityFinder.findByIdOrThrow(usersRepository, id, "Usuário");
+    }
+
+    public Users updateById(Long id, UserUpdateDTO dto) {
+        Users user = EntityFinder.findByIdOrThrow(usersRepository, id, "Usuário");
+
+        if (usersRepository.existsByEmailAndIdNot(dto.email(), id)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, 
+                "O e-mail informado já está sendo utilizado por outro usuário.");
+        }
+
+        Department department = null;
+
+        if (dto.userType() == UserType.TECNICO) {
+            if (dto.departmentId() == null) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, 
+                    "Usuários do tipo TÉCNICO devem estar obrigatoriamente vinculados a um setor.");
+            }
+
+            department = EntityFinder.findByIdOrThrow(departmentRepository, dto.departmentId(), "Departamento");
+        }
+
+        user.setName(dto.name());
+        user.setEmail(dto.email());
+        user.setUserType(dto.userType());
+        user.setDepartment(department);
+
+        return usersRepository.save(user);
     }
 }

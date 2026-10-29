@@ -9,15 +9,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ifrn.chamados.category.dto.CategoryResponseDTO;
 import com.ifrn.chamados.common.enums.UserType;
 import com.ifrn.chamados.users.dto.UserCreateDTO;
 import com.ifrn.chamados.users.dto.UserResponseDTO;
+import com.ifrn.chamados.users.dto.UserUpdateDTO;
 
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -82,5 +83,26 @@ public class UsersController {
     public ResponseEntity<UserResponseDTO> findById(@PathVariable Long id) {
         Users searched = usersService.findById(id);
         return ResponseEntity.ok(UserResponseDTO.fromEntity(searched));
+    }
+
+    @PutMapping("{id}")
+    @ApiResponse(
+        responseCode = "200", 
+        description = "Usuário atualizado com sucesso", 
+        content = @Content(schema = @Schema(hidden = true))
+    )
+    @ApiResponse(
+        responseCode = "404", 
+        description = "Departamento não encontrado", 
+        content = @Content(schema = @Schema(hidden = true))
+    )
+    @ApiResponse(
+        responseCode = "409", 
+        description = "Já existe um usuário com esse e-mail", 
+        content = @Content(schema = @Schema(hidden = true))
+    )
+    public ResponseEntity<UserResponseDTO> update(@PathVariable Long id, @RequestBody @Valid UserUpdateDTO dto) {
+        Users updated = usersService.updateById(id, dto);
+        return ResponseEntity.ok(UserResponseDTO.fromEntity(updated));
     }
 }
