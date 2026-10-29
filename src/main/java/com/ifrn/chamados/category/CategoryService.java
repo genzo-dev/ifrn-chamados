@@ -60,24 +60,35 @@ public class CategoryService {
   }
 
     public Category updateById(Long id, CategoryUpdateDTO dto) {
-    Category category = categoryRepository.findById(id)
-        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Categoria com ID " + id + " não encontrada"));
+        Category category = categoryRepository.findById(id)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Categoria com ID " + id + " não encontrada"));
 
-    if (dto.name() != null && !dto.name().isBlank()) {
-        category.setName(dto.name());
-    }
+        if (dto.name() != null && !dto.name().isBlank()) {
+            category.setName(dto.name());
+        }
 
-    if (dto.description() != null && !dto.description().isBlank()) {
-        category.setDescription(dto.description());;
-    }
+        if (dto.description() != null && !dto.description().isBlank()) {
+            category.setDescription(dto.description());;
+        }
 
-    if (dto.departmentId() != null) {
-        Department department = departmentRepository.findById(dto.departmentId())
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Departamento não encontrado"));
-        category.setDepartment(department);
-    }
+        if (dto.departmentId() != null) {
+            Department department = departmentRepository.findById(dto.departmentId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Departamento não encontrado"));
+            category.setDepartment(department);
+        }
 
-    return categoryRepository.save(category);
+        return categoryRepository.save(category);
+  }
+
+    public Category deleteById(Long id) {
+        // TODO: adicionar regra que impeça exclusão em caso de chamado (ticket) vinculado 
+
+        Category category = categoryRepository.findById(id)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Categoria com ID " + id + " não encontrada"));
+
+        categoryRepository.delete(category);
+
+        return category;
   }
 }
 

@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,6 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ifrn.chamados.category.dto.CategoryCreateDTO;
 import com.ifrn.chamados.category.dto.CategoryResponseDTO;
 import com.ifrn.chamados.category.dto.CategoryUpdateDTO;
+import com.ifrn.chamados.department.Department;
+import com.ifrn.chamados.department.dto.DepartmentResponseDTO;
 
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -98,5 +101,26 @@ public class CategoryController {
   public ResponseEntity<CategoryResponseDTO> update(@PathVariable Long id, @RequestBody CategoryUpdateDTO dto) {
     Category updated = categoryService.updateById(id, dto);
     return ResponseEntity.ok(CategoryResponseDTO.fromEntity(updated));
+  }
+
+  @DeleteMapping("{id}")
+  @ApiResponse(
+    responseCode = "200", 
+    description = "Categoria deletada com sucesso", 
+    content = @Content(schema = @Schema(hidden = true))
+  )
+  @ApiResponse(
+    responseCode = "404", 
+    description = "Categoria não encontrada", 
+    content = @Content(schema = @Schema(hidden = true))
+  )
+  @ApiResponse(
+    responseCode = "409", 
+    description = "Existe algum chamado vinculado à categoria em questão",
+    content = @Content(schema = @Schema(hidden = true))
+  )
+  public ResponseEntity<CategoryResponseDTO> delete(@PathVariable Long id) {
+    Category searched = categoryService.deleteById(id);
+    return ResponseEntity.ok(CategoryResponseDTO.fromEntity(searched));
   }
 }
