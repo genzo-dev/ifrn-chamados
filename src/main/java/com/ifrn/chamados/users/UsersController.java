@@ -7,12 +7,14 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ifrn.chamados.category.dto.CategoryResponseDTO;
 import com.ifrn.chamados.common.enums.UserType;
 import com.ifrn.chamados.users.dto.UserCreateDTO;
 import com.ifrn.chamados.users.dto.UserResponseDTO;
@@ -64,5 +66,21 @@ public class UsersController {
         @PageableDefault(size = 10, sort = "name") Pageable pageable) {
         Page<Users> usersPage = usersService.findAllFiltered(name, userType, departmentId, pageable);
         return ResponseEntity.ok(usersPage.map(UserResponseDTO::fromEntity));
+    }
+
+    @GetMapping("{id}")
+    @ApiResponse(
+        responseCode = "200", 
+        description = "Usuário encontrado com sucesso", 
+        content = @Content(schema = @Schema(hidden = true))
+    )
+    @ApiResponse(
+        responseCode = "404", 
+        description = "Usuário não encontrado", 
+        content = @Content(schema = @Schema(hidden = true))
+    )
+    public ResponseEntity<UserResponseDTO> findById(@PathVariable Long id) {
+        Users searched = usersService.findById(id);
+        return ResponseEntity.ok(UserResponseDTO.fromEntity(searched));
     }
 }

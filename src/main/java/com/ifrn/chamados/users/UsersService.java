@@ -56,4 +56,8 @@ public class UsersService {
         String searchName = (name != null && !name.isBlank()) ? name.trim() : null;
         return usersRepository.findWithFilters(searchName, userType, departmentId, pageable);
     }
+
+    public Users findById(Long id) {
+        return EntityFinder.findByIdOrThrow(usersRepository, id, "Usuário");
+    }
 }
