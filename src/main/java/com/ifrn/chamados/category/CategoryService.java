@@ -7,6 +7,7 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.stereotype.Service;
 
 import com.ifrn.chamados.category.dto.CategoryCreateDTO;
+import com.ifrn.chamados.category.dto.CategoryUpdateDTO;
 import com.ifrn.chamados.department.Department;
 import com.ifrn.chamados.department.DepartmentRepository;
 
@@ -56,6 +57,27 @@ public class CategoryService {
     public Category findById(Long id) {
     return categoryRepository.findById(id).orElseThrow(
         () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Categoria com ID " + id + " não encontrado."));
+  }
+
+    public Category updateById(Long id, CategoryUpdateDTO dto) {
+    Category category = categoryRepository.findById(id)
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Categoria com ID " + id + " não encontrada"));
+
+    if (dto.name() != null && !dto.name().isBlank()) {
+        category.setName(dto.name());
+    }
+
+    if (dto.description() != null && !dto.description().isBlank()) {
+        category.setDescription(dto.description());;
+    }
+
+    if (dto.departmentId() != null) {
+        Department department = departmentRepository.findById(dto.departmentId())
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Departamento não encontrado"));
+        category.setDepartment(department);
+    }
+
+    return categoryRepository.save(category);
   }
 }
 

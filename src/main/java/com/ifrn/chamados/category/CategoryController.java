@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ifrn.chamados.category.dto.CategoryCreateDTO;
 import com.ifrn.chamados.category.dto.CategoryResponseDTO;
+import com.ifrn.chamados.category.dto.CategoryUpdateDTO;
 
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -80,5 +82,21 @@ public class CategoryController {
   public ResponseEntity<CategoryResponseDTO> findById(@PathVariable Long id) {
     Category searched = categoryService.findById(id);
     return ResponseEntity.ok(CategoryResponseDTO.fromEntity(searched));
+  }
+
+  @PutMapping("{id}")
+  @ApiResponse(
+    responseCode = "200", 
+    description = "Categoria atualizada com sucesso", 
+    content = @Content(schema = @Schema(hidden = true))
+  )
+  @ApiResponse(
+    responseCode = "404", 
+    description = "Departamento ou Categoria não encontrado", 
+    content = @Content(schema = @Schema(hidden = true))
+  )
+  public ResponseEntity<CategoryResponseDTO> update(@PathVariable Long id, @RequestBody CategoryUpdateDTO dto) {
+    Category updated = categoryService.updateById(id, dto);
+    return ResponseEntity.ok(CategoryResponseDTO.fromEntity(updated));
   }
 }
