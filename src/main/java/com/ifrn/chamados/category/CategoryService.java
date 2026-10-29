@@ -1,5 +1,7 @@
 package com.ifrn.chamados.category;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.stereotype.Service;
@@ -34,6 +36,21 @@ public class CategoryService {
         category.setDepartment(department);
 
         return categoryRepository.save(category);
+    }
+
+    public Page<Category> findAllFiltered(String name, Long departmentId, Pageable pageable) {
+        boolean hasName = name != null && !name.isBlank();
+        boolean hasDepartmentId = departmentId != null;
+
+        if (hasName && hasDepartmentId) {
+            return categoryRepository.findByNameContainingIgnoreCaseAndDepartmentId(name, departmentId, pageable);
+        } else if (hasName) {
+            return categoryRepository.findByNameContainingIgnoreCase(name, pageable);
+        } else if (hasDepartmentId) {
+            return categoryRepository.findByDepartmentId(departmentId, pageable);
+        }
+
+        return categoryRepository.findAll(pageable);
     }
 }
 

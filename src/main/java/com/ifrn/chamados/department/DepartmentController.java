@@ -62,7 +62,8 @@ public class DepartmentController {
   )
   public ResponseEntity<Page<DepartmentResponseDTO>> list(
       @RequestParam(required = false) String nome,
-      @ParameterObject @PageableDefault(size = 10, sort = "name") Pageable pageable) {
+      @ParameterObject 
+      @PageableDefault(size = 10, sort = "name") Pageable pageable) {
     Page<Department> page = departmentService.findAll(nome, pageable);
     return ResponseEntity.ok(page.map(DepartmentResponseDTO::fromEntity));
   }
