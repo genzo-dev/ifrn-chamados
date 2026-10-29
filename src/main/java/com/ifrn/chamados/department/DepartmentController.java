@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ifrn.chamados.department.dto.DepartmentRequestDTO;
 import com.ifrn.chamados.department.dto.DepartmentResponseDTO;
+import com.ifrn.chamados.department.dto.DepartmentUpdateDTO;
 
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -79,6 +81,22 @@ public class DepartmentController {
   public ResponseEntity<DepartmentResponseDTO> findById(@PathVariable Long id) {
     Department searched = departmentService.findById(id);
     return ResponseEntity.ok(DepartmentResponseDTO.fromEntity(searched));
+  }
+
+  @PatchMapping("{id}")
+  @ApiResponse(
+    responseCode = "200", 
+    description = "Departamento atualizado com sucesso", 
+    content = @Content(schema = @Schema(hidden = true))
+  )
+  @ApiResponse(
+    responseCode = "404", 
+    description = "Departamento não encontrado", 
+    content = @Content(schema = @Schema(hidden = true))
+  )
+  public ResponseEntity<DepartmentResponseDTO> update(@PathVariable Long id, @RequestBody DepartmentUpdateDTO dto) {
+    Department departmentUpdated = departmentService.updateById(id, dto);
+    return ResponseEntity.ok(DepartmentResponseDTO.fromEntity(departmentUpdated));
   }
 
   @DeleteMapping("{id}")

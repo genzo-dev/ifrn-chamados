@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.ifrn.chamados.department.dto.DepartmentRequestDTO;
+import com.ifrn.chamados.department.dto.DepartmentUpdateDTO;
 
 import lombok.RequiredArgsConstructor;
 
@@ -43,13 +44,26 @@ public class DepartmentService {
         () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Departamento com ID " + id + " não encontrado."));
   }
 
+  public Department updateById(Long id, DepartmentUpdateDTO dto) {
+    Department department = departmentRepository.findById(id)
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Departamento com ID " + id + " não encontrado"));
+
+    if (dto.name() != null && !dto.name().isBlank()) {
+      department.setName(dto.name());
+    }
+
+    if (dto.abbreviation() != null && !dto.abbreviation().isBlank()) {
+      department.setAbbreviation(dto.abbreviation());;
+    }
+
+    return departmentRepository.save(department);
+  }
+
   public Department deleteById(Long id) {
-    // TODO: adicionar regra que impeça exclusão em caso de chamado vinculado
+    // TODO: adicionar regra que impeça exclusão em caso de chamado (ticket) vinculado 
 
     Department department = departmentRepository.findById(id)
-        .orElseThrow(() -> new ResponseStatusException(
-            HttpStatus.NOT_FOUND,
-            "Departamento com ID " + id + " não encontrado"));
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Departamento com ID " + id + " não encontrado"));
 
     departmentRepository.delete(department);
 
