@@ -52,5 +52,10 @@ public class CategoryService {
 
         return categoryRepository.findAll(pageable);
     }
+
+    public Category findById(Long id) {
+    return categoryRepository.findById(id).orElseThrow(
+        () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Categoria com ID " + id + " não encontrado."));
+  }
 }
 
