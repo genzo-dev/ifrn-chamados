@@ -1,11 +1,14 @@
 package com.ifrn.chamados.department;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.ifrn.chamados.category.Category;
 import com.ifrn.chamados.department.dto.DepartmentRequestDTO;
 import com.ifrn.chamados.department.dto.DepartmentUpdateDTO;
 
@@ -68,5 +71,12 @@ public class DepartmentService {
     departmentRepository.delete(department);
 
     return department;
+  }
+
+  public List<Category> findCategoriesByDepartment(Long id) {
+      Department department = departmentRepository.findById(id)
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Departamento com ID " + id + " não encontrado"));
+
+      return department.getCategories();
   }
 }
