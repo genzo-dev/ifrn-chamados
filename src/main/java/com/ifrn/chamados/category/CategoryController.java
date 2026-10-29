@@ -19,8 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ifrn.chamados.category.dto.CategoryCreateDTO;
 import com.ifrn.chamados.category.dto.CategoryResponseDTO;
 import com.ifrn.chamados.category.dto.CategoryUpdateDTO;
-import com.ifrn.chamados.department.Department;
-import com.ifrn.chamados.department.dto.DepartmentResponseDTO;
 
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;

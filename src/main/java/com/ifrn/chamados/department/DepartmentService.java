@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.ifrn.chamados.category.Category;
+import com.ifrn.chamados.common.utils.EntityFinder;
 import com.ifrn.chamados.department.dto.DepartmentRequestDTO;
 import com.ifrn.chamados.department.dto.DepartmentUpdateDTO;
 
@@ -43,13 +44,11 @@ public class DepartmentService {
   }
 
   public Department findById(Long id) {
-    return departmentRepository.findById(id).orElseThrow(
-        () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Departamento com ID " + id + " não encontrado."));
+    return EntityFinder.findByIdOrThrow(departmentRepository, id, "Departamento");
   }
 
   public Department updateById(Long id, DepartmentUpdateDTO dto) {
-    Department department = departmentRepository.findById(id)
-        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Departamento com ID " + id + " não encontrado"));
+    Department department = EntityFinder.findByIdOrThrow(departmentRepository, id, "Departamento");
 
     if (dto.name() != null && !dto.name().isBlank()) {
       department.setName(dto.name());
@@ -65,8 +64,7 @@ public class DepartmentService {
   public Department deleteById(Long id) {
     // TODO: adicionar regra que impeça exclusão em caso de chamado (ticket) vinculado 
 
-    Department department = departmentRepository.findById(id)
-        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Departamento com ID " + id + " não encontrado"));
+    Department department = EntityFinder.findByIdOrThrow(departmentRepository, id, "Departamento");
 
     departmentRepository.delete(department);
 
@@ -74,9 +72,7 @@ public class DepartmentService {
   }
 
   public List<Category> findCategoriesByDepartment(Long id) {
-      Department department = departmentRepository.findById(id)
-        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Departamento com ID " + id + " não encontrado"));
-
+      Department department = EntityFinder.findByIdOrThrow(departmentRepository, id, "Departamento");
       return department.getCategories();
   }
 }

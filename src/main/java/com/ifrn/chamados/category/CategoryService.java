@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.ifrn.chamados.category.dto.CategoryCreateDTO;
 import com.ifrn.chamados.category.dto.CategoryUpdateDTO;
+import com.ifrn.chamados.common.utils.EntityFinder;
 import com.ifrn.chamados.department.Department;
 import com.ifrn.chamados.department.DepartmentRepository;
 
@@ -28,8 +29,7 @@ public class CategoryService {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Já existe uma categoria com a mesma descrição.");
         }
 
-        Department department = departmentRepository.findById(dto.department_id())
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Departamento não encontrado"));
+        Department department = EntityFinder.findByIdOrThrow(departmentRepository, dto.department_id(), "Departamento");
 
         Category category = new Category();
         category.setName(dto.name());
@@ -55,13 +55,11 @@ public class CategoryService {
     }
 
     public Category findById(Long id) {
-    return categoryRepository.findById(id).orElseThrow(
-        () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Categoria com ID " + id + " não encontrado."));
-  }
+        return EntityFinder.findByIdOrThrow(categoryRepository, id, "Categoria");
+    }
 
     public Category updateById(Long id, CategoryUpdateDTO dto) {
-        Category category = categoryRepository.findById(id)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Categoria com ID " + id + " não encontrada"));
+        Category category = EntityFinder.findByIdOrThrow(categoryRepository, id, "Categoria");
 
         if (dto.name() != null && !dto.name().isBlank()) {
             category.setName(dto.name());
@@ -72,8 +70,7 @@ public class CategoryService {
         }
 
         if (dto.departmentId() != null) {
-            Department department = departmentRepository.findById(dto.departmentId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Departamento não encontrado"));
+            Department department = EntityFinder.findByIdOrThrow(departmentRepository, id, "Departamento");
             category.setDepartment(department);
         }
 
@@ -83,8 +80,7 @@ public class CategoryService {
     public Category deleteById(Long id) {
         // TODO: adicionar regra que impeça exclusão em caso de chamado (ticket) vinculado 
 
-        Category category = categoryRepository.findById(id)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Categoria com ID " + id + " não encontrada"));
+        Category category = EntityFinder.findByIdOrThrow(categoryRepository, id, "Categoria");
 
         categoryRepository.delete(category);
 
