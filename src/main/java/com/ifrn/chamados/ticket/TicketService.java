@@ -5,15 +5,15 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import com.ifrn.chamados.category.Category;
 import com.ifrn.chamados.category.CategoryRepository;
 import com.ifrn.chamados.common.enums.Priority;
 import com.ifrn.chamados.common.enums.Status;
 import com.ifrn.chamados.common.enums.UserType;
+import com.ifrn.chamados.common.exception.BusinessRuleException;
+import com.ifrn.chamados.common.exception.InvalidStateException;
 import com.ifrn.chamados.common.utils.EntityFinder;
 import com.ifrn.chamados.interaction.Interaction;
 import com.ifrn.chamados.interaction.InteractionRepository;
@@ -39,7 +39,7 @@ public class TicketService {
         Users requester = EntityFinder.findByIdOrThrow(usersRepository, dto.requesterId(), "Usuário solicitante");
 
         if (requester.getUserType() != UserType.SOLICITANTE) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, 
+            throw new BusinessRuleException(
                 "Apenas usuários do tipo SOLICITANTE podem abrir chamados.");
         }
 
@@ -101,14 +101,14 @@ public class TicketService {
         Ticket ticket = EntityFinder.findByIdOrThrow(ticketRepository, ticketId, "Chamado");
 
         if (ticket.getStatus() != Status.ABERTO) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, 
+            throw new InvalidStateException(
                 "Apenas chamados com status ABERTO podem ser assumidos.");
         }
 
         Users technician = EntityFinder.findByIdOrThrow(usersRepository, dto.technicianId(), "Técnico");
 
         if (technician.getUserType() != UserType.TECNICO) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, 
+            throw new BusinessRuleException(
                 "O usuário informado não é um técnico.");
         }
 
@@ -117,7 +117,7 @@ public class TicketService {
                 && technician.getDepartment().getId().equals(categoryDepartmentId);
 
         if (!belongsToDepartment) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, 
+            throw new BusinessRuleException(
                 "O técnico não pertence ao setor responsável pela categoria deste chamado.");
         }
 
@@ -131,19 +131,19 @@ public class TicketService {
         Ticket ticket = EntityFinder.findByIdOrThrow(ticketRepository, ticketId, "Chamado");
 
         if (ticket.getStatus() == Status.RESOLVIDO || ticket.getStatus() == Status.CANCELADO) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, 
+            throw new InvalidStateException(
                 "Não é possível alterar chamados já resolvidos ou cancelados.");
         }
 
         if (ticket.getStatus() != Status.EM_ANDAMENTO) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, 
+            throw new InvalidStateException(
                 "Apenas chamados com status EM_ANDAMENTO podem ser resolvidos.");
         }
 
         Users technician = EntityFinder.findByIdOrThrow(usersRepository, dto.technicianId(), "Técnico");
 
         if (ticket.getTechnician() == null || !ticket.getTechnician().getId().equals(technician.getId())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, 
+            throw new BusinessRuleException(
                 "Apenas o técnico responsável por este chamado pode resolvê-lo.");
         }
 
@@ -158,14 +158,14 @@ public class TicketService {
         Ticket ticket = EntityFinder.findByIdOrThrow(ticketRepository, ticketId, "Chamado");
 
         if (ticket.getStatus() != Status.ABERTO) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, 
+            throw new InvalidStateException(
                 "Apenas chamados com status ABERTO podem ser cancelados.");
         }
 
         Users requester = EntityFinder.findByIdOrThrow(usersRepository, dto.requesterId(), "Solicitante");
 
         if (!ticket.getRequester().getId().equals(requester.getId())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, 
+            throw new BusinessRuleException(
                 "Apenas o próprio solicitante pode cancelar o chamado.");
         }
 
