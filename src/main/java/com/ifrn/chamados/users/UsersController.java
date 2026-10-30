@@ -3,6 +3,7 @@ package com.ifrn.chamados.users;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +16,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ifrn.chamados.common.enums.Status;
 import com.ifrn.chamados.common.enums.UserType;
+import com.ifrn.chamados.ticket.Ticket;
+import com.ifrn.chamados.ticket.TicketService;
+import com.ifrn.chamados.ticket.dto.TicketResponseDTO;
 import com.ifrn.chamados.users.dto.UserCreateDTO;
 import com.ifrn.chamados.users.dto.UserResponseDTO;
 import com.ifrn.chamados.users.dto.UserUpdateDTO;
@@ -31,6 +36,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor 
 public class UsersController {
     private final UsersService usersService;
+    private final TicketService ticketService;
 
     @PostMapping
     @ApiResponse(
@@ -83,6 +89,22 @@ public class UsersController {
     public ResponseEntity<UserResponseDTO> findById(@PathVariable Long id) {
         Users searched = usersService.findById(id);
         return ResponseEntity.ok(UserResponseDTO.fromEntity(searched));
+    }
+
+    @GetMapping("/{id}/chamados")
+    @ApiResponse(
+        responseCode = "200", 
+        description = "Chamados atribuídos a um solicitante ou técnico encontrados com sucesso", 
+        content = @Content(schema = @Schema(hidden = true))
+    )
+    public ResponseEntity<Page<TicketResponseDTO>> getUserTickets(
+            @PathVariable Long id,
+            @RequestParam(required = false, name = "status") Status status,
+            @ParameterObject
+            @PageableDefault(size = 10, sort = "openingDate", direction = Sort.Direction.DESC) Pageable pageable) {
+
+        Page<Ticket> tickets = ticketService.findByUserIdAndStatus(id, status, pageable);
+        return ResponseEntity.ok(tickets.map(TicketResponseDTO::fromEntity));
     }
 
     @PutMapping("{id}")

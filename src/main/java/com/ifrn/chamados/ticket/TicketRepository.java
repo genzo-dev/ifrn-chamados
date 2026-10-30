@@ -34,4 +34,15 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
         @Param("dataFim") LocalDateTime dataFim,
         Pageable pageable
     );
+
+    @Query("""
+        SELECT t FROM Ticket t
+        WHERE (t.requester.id = :userId OR t.technician.id = :userId)
+          AND (:status IS NULL OR t.status = :status)
+    """)
+    Page<Ticket> findByUserIdAndStatus(
+        @Param("userId") Long userId,
+        @Param("status") Status status,
+        Pageable pageable
+    );
 }

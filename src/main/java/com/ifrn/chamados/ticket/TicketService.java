@@ -1,7 +1,6 @@
 package com.ifrn.chamados.ticket;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -87,6 +86,11 @@ public class TicketService {
         List<Interaction> interactions = interactionRepository.findByTicketId(id);
 
         return TicketDetailResponseDTO.fromEntity(ticket, interactions);
+    }
 
+    public Page<Ticket> findByUserIdAndStatus(Long userId, Status status, Pageable pageable) {
+        EntityFinder.findByIdOrThrow(usersRepository, userId, "Usuário");
+
+        return ticketRepository.findByUserIdAndStatus(userId, status, pageable);
     }
 }
