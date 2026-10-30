@@ -4,13 +4,13 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 import com.ifrn.chamados.category.Category;
 import com.ifrn.chamados.category.CategoryRepository;
+import com.ifrn.chamados.common.exception.DuplicateResourceException;
+import com.ifrn.chamados.common.exception.ResourceInUseException;
 import com.ifrn.chamados.common.utils.EntityFinder;
 import com.ifrn.chamados.department.dto.DepartmentRequestDTO;
 import com.ifrn.chamados.department.dto.DepartmentUpdateDTO;
@@ -30,11 +30,11 @@ public class DepartmentService {
 
   public Department create(DepartmentRequestDTO dto) {
     if (departmentRepository.existsByNameIgnoreCase(dto.name())) {
-      throw new ResponseStatusException(HttpStatus.CONFLICT, "Já existe um departamento com esse nome.");
+      throw new DuplicateResourceException("Já existe um departamento com esse nome.");
     }
 
     if (departmentRepository.existsByAbbreviationIgnoreCase(dto.abbreviation())) {
-      throw new ResponseStatusException(HttpStatus.CONFLICT, "Já existe um departamento com essa sigla.");
+      throw new DuplicateResourceException("Já existe um departamento com essa sigla.");
     }
 
     Department department = new Department();
@@ -60,17 +60,11 @@ public class DepartmentService {
     Department department = EntityFinder.findByIdOrThrow(departmentRepository, id, "Departamento");
 
     if (departmentRepository.existsByNameIgnoreCaseAndIdNot(dto.name(), id)) {
-      throw new ResponseStatusException(
-          HttpStatus.CONFLICT,
-          "Já existe um departamento com esse nome."
-      );
+      throw new DuplicateResourceException("Já existe um departamento com esse nome.");
     }
 
     if (departmentRepository.existsByAbbreviationIgnoreCaseAndIdNot(dto.abbreviation(), id)) {
-      throw new ResponseStatusException(
-          HttpStatus.CONFLICT,
-          "Já existe um departamento com essa sigla."
-      );
+      throw new DuplicateResourceException("Já existe um departamento com essa sigla.");
     }
 
     department.setName(dto.name());
@@ -84,22 +78,19 @@ public class DepartmentService {
   Department department = EntityFinder.findByIdOrThrow(departmentRepository, id, "Departamento");
 
   if (ticketRepository.existsByCategoryDepartmentId(id)) {
-    throw new ResponseStatusException(
-        HttpStatus.CONFLICT,
+    throw new ResourceInUseException(
         "Não é possível excluir um setor que possui chamados vinculados."
     );
   }
 
   if (categoryRepository.existsByDepartmentId(id)) {
-    throw new ResponseStatusException(
-        HttpStatus.CONFLICT,
+    throw new ResourceInUseException(
         "Não é possível excluir um setor que possui categorias vinculadas."
     );
   }
 
   if (usersRepository.existsByDepartmentId(id)) {
-    throw new ResponseStatusException(
-        HttpStatus.CONFLICT,
+    throw new ResourceInUseException(
         "Não é possível excluir um setor que possui usuários vinculados."
     );
   }

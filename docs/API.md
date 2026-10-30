@@ -231,6 +231,51 @@ A operação `POST /tickets/{id}/interactions` deve obedecer às seguintes regra
 | `404 Not Found`   | Recurso solicitado ou referência necessária não encontrada.                                                  |
 | `409 Conflict`    | Violação de regras de negócio, conflito de unicidade ou operação incompatível com o estado atual do recurso. |
 
+### 5.1 Formato dos erros
+
+Os erros são retornados no formato `application/problem+json` (`ProblemDetail`), sem stack trace:
+
+```json
+{
+  "type": "about:blank",
+  "title": "Regra de negócio violada",
+  "status": 409,
+  "detail": "Apenas chamados com status ABERTO podem ser assumidos.",
+  "instance": "/ticket/1/assign",
+  "code": "BUSINESS_RULE_VIOLATION"
+}
+```
+
+Erros de validação incluem o campo `errors`:
+
+```json
+{
+  "type": "about:blank",
+  "title": "Erro de validação",
+  "status": 400,
+  "detail": "Dados inválidos ou fornecidos incorretamente.",
+  "instance": "/department",
+  "code": "VALIDATION_ERROR",
+  "errors": {
+    "name": ["O nome é obrigatório"]
+  }
+}
+```
+
+| `code`                     | Status | Aplicação                                                   |
+| -------------------------- | -----: | ----------------------------------------------------------- |
+| `RESOURCE_NOT_FOUND`       |  `404` | Recurso ou referência não encontrada.                       |
+| `INVALID_REQUEST`          |  `400` | Corpo, parâmetro ou tipo de dados inválido.                 |
+| `VALIDATION_ERROR`         |  `400` | Falha de validação de campos.                               |
+| `DUPLICATE_RESOURCE`       |  `409` | Violação de unicidade.                                      |
+| `RESOURCE_IN_USE`          |  `409` | Recurso com vínculos que impedem a exclusão.                |
+| `INVALID_STATE`            |  `409` | Operação incompatível com o estado atual do recurso.        |
+| `BUSINESS_RULE_VIOLATION`  |  `409` | Violação de regra de negócio.                               |
+| `DATA_INTEGRITY_VIOLATION` |  `409` | Violação de integridade detectada pelo banco.               |
+| `UNSUPPORTED_MEDIA_TYPE`   |  `415` | `Content-Type` não suportado.                               |
+| `METHOD_NOT_ALLOWED`       |  `405` | Método HTTP não suportado para o recurso.                   |
+| `INTERNAL_ERROR`           |  `500` | Erro inesperado; detalhes são registrados apenas no servidor. |
+
 ---
 
 ## 6. Considerações finais

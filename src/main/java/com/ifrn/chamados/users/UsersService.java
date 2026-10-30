@@ -2,11 +2,11 @@ package com.ifrn.chamados.users;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import com.ifrn.chamados.common.enums.UserType;
+import com.ifrn.chamados.common.exception.BadRequestException;
+import com.ifrn.chamados.common.exception.DuplicateResourceException;
 import com.ifrn.chamados.common.utils.EntityFinder;
 import com.ifrn.chamados.department.Department;
 import com.ifrn.chamados.department.DepartmentRepository;
@@ -23,12 +23,12 @@ public class UsersService {
 
     public Users create(UserCreateDTO dto) {
         if (usersRepository.existsByEmail(dto.email())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, 
+            throw new DuplicateResourceException(
                 "O e-mail informado já está sendo utilizado. Por favor, informe outro e-mail." );
         }
 
         if (usersRepository.existsByRegistrationNumber(dto.registrationNumber())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, 
+            throw new DuplicateResourceException(
                 "A matricula já está cadastrada no sistema." );
         }
 
@@ -36,7 +36,7 @@ public class UsersService {
 
         if (dto.userType() == UserType.TECNICO) {
             if (dto.departmentId() == null) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, 
+                throw new BadRequestException(
                     "Usuários do tipo TÉCNICO devem estar obrigatoriamente vinculados a um setor.");
             }
 
@@ -66,7 +66,7 @@ public class UsersService {
         Users user = EntityFinder.findByIdOrThrow(usersRepository, id, "Usuário");
 
         if (usersRepository.existsByEmailAndIdNot(dto.email(), id)) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, 
+            throw new DuplicateResourceException(
                 "O e-mail informado já está sendo utilizado por outro usuário.");
         }
 
@@ -74,7 +74,7 @@ public class UsersService {
 
         if (dto.userType() == UserType.TECNICO) {
             if (dto.departmentId() == null) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, 
+                throw new BadRequestException(
                     "Usuários do tipo TÉCNICO devem estar obrigatoriamente vinculados a um setor.");
             }
 

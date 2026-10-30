@@ -2,11 +2,11 @@ package com.ifrn.chamados.interaction;
 
 import java.time.LocalDateTime;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import com.ifrn.chamados.common.enums.Status;
+import com.ifrn.chamados.common.exception.BusinessRuleException;
+import com.ifrn.chamados.common.exception.InvalidStateException;
 import com.ifrn.chamados.common.utils.EntityFinder;
 import com.ifrn.chamados.interaction.dto.InteractionCreateDTO;
 import com.ifrn.chamados.ticket.Ticket;
@@ -28,7 +28,7 @@ public class InteractionService {
         Ticket ticket = EntityFinder.findByIdOrThrow(ticketRepository, ticketId, "Chamado");
         
         if (ticket.getStatus() == Status.CANCELADO || ticket.getStatus() ==  Status.RESOLVIDO) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Não é possível registrar interações em chamados resolvidos ou cancelados.");
+            throw new InvalidStateException("Não é possível registrar interações em chamados resolvidos ou cancelados.");
         }
 
         Users author = EntityFinder.findByIdOrThrow(usersRepository, dto.authorId(), "Usuário autor");
@@ -37,7 +37,7 @@ public class InteractionService {
         boolean isAssignedTechnician = ticket.getTechnician() != null && ticket.getTechnician().getId().equals(author.getId());
 
         if (!isRequester && !isAssignedTechnician) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT,
+            throw new BusinessRuleException(
                 "Apenas o solicitante ou o técnico responsável pelo chamado podem registrar interações.");
         }
 
