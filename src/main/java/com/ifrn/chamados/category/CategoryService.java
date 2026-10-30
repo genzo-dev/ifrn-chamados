@@ -2,13 +2,13 @@ package com.ifrn.chamados.category;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ifrn.chamados.category.dto.CategoryCreateDTO;
 import com.ifrn.chamados.category.dto.CategoryUpdateDTO;
+import com.ifrn.chamados.common.exception.DuplicateResourceException;
+import com.ifrn.chamados.common.exception.ResourceInUseException;
 import com.ifrn.chamados.common.utils.EntityFinder;
 import com.ifrn.chamados.department.Department;
 import com.ifrn.chamados.department.DepartmentRepository;
@@ -25,11 +25,11 @@ public class CategoryService {
 
     public Category create(CategoryCreateDTO dto) {
         if (categoryRepository.existsByNameIgnoreCase(dto.name())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "A categoria " + dto.name() + " já existe.");
+            throw new DuplicateResourceException("A categoria " + dto.name() + " já existe.");
         }
 
         if (categoryRepository.existsByDescriptionIgnoreCase(dto.name())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Já existe uma categoria com a mesma descrição.");
+            throw new DuplicateResourceException("Já existe uma categoria com a mesma descrição.");
         }
 
         Department department = EntityFinder.findByIdOrThrow(departmentRepository, dto.department_id(), "Departamento");
@@ -75,8 +75,7 @@ public class CategoryService {
         Category category = EntityFinder.findByIdOrThrow(categoryRepository, id, "Categoria");
 
         if (ticketRepository.existsByCategoryId(id)) {
-            throw new ResponseStatusException(
-                HttpStatus.CONFLICT, 
+            throw new ResourceInUseException(
                 "Não é possível excluir uma categoria que possui chamados vinculados."
             );
         }

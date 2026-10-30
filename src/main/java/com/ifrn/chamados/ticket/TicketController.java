@@ -92,9 +92,14 @@ public class TicketController {
     }
 
     @GetMapping("/{id}")
-        @ApiResponse(
+    @ApiResponse(
         responseCode = "200", 
         description = "Chamado encontrado", 
+        content = @Content(schema = @Schema(hidden = true))
+    )
+    @ApiResponse(
+        responseCode = "404", 
+        description = "Chamado não encontrado", 
         content = @Content(schema = @Schema(hidden = true))
     )
     public ResponseEntity<TicketDetailResponseDTO> findById(@PathVariable Long id) {
