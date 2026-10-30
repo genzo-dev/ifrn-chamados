@@ -104,7 +104,7 @@ public class TicketController {
 
     @PatchMapping("/{id}/assign")
     @ApiResponse(
-        responseCode = "201", 
+        responseCode = "200", 
         description = "Chamado assinado com sucesso", 
         content = @Content(schema = @Schema(hidden = true))
     )
@@ -128,7 +128,7 @@ public class TicketController {
 
     @PatchMapping("/{id}/resolve")
     @ApiResponse(
-        responseCode = "201", 
+        responseCode = "200", 
         description = "Chamado resolvido com sucesso", 
         content = @Content(schema = @Schema(hidden = true))
     )
@@ -157,7 +157,7 @@ public class TicketController {
 
     @PatchMapping("/{id}/cancel")
     @ApiResponse(
-        responseCode = "201", 
+        responseCode = "200", 
         description = "Chamado cancelado com sucesso", 
         content = @Content(schema = @Schema(hidden = true))
     )

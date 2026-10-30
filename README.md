@@ -68,11 +68,14 @@ Além disso, a documentação de endpoints via Swagger está disponível em:
 │       └── maven-wrapper.properties  # Configuração do Maven Wrapper
 ├── Dockerfile                        # Build multi-stage: development, test, build e production
 ├── docs
-│   └── API.md                        # Contrato REST: rotas, códigos HTTP e regras de negócio
+│   ├── API.md                        # Contrato REST: rotas, códigos HTTP e regras de negócio
+│   └── insomnia
+│       └── chamados.insomnia.yaml    # Coleção Insomnia v5 com ambiente e scripts
 ├── infra
 │   ├── docker-compose.yml            # Serviços base: backend Spring Boot + PostgreSQL 17
 │   ├── docker-compose.dev.yml        # Overlay de desenvolvimento (hot reload e volume persistente)
 │   └── docker-compose.test.yml       # Overlay de testes (banco efêmero em tmpfs)
+├── INSOMNIA.md                       # Guia de importação e uso da coleção do Insomnia
 ├── Makefile                          # Atalhos para orquestrar os ambientes Docker
 ├── mvnw
 ├── mvnw.cmd
@@ -273,9 +276,11 @@ Em ambientes profissionais e de produção, adota-se o bloqueio de criação aut
 
 ## Documentação
 
-| Documento             | Descrição                                                             |
-| --------------------- | --------------------------------------------------------------------- |
-| [API.md](docs/API.md) | Tabelas de endpoints com suas respectivas funções e regras de negócio |
+| Documento                                                            | Descrição                                                             |
+| -------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| [API.md](docs/API.md)                                                | Tabelas de endpoints com suas respectivas funções e regras de negócio |
+| [INSOMNIA.md](INSOMNIA.md)                                           | Guia de importação e uso da coleção do Insomnia                       |
+| [chamados.insomnia.yaml](docs/insomnia/chamados.insomnia.yaml)        | Coleção Insomnia v5 com ambiente, scripts e casos de erro             |
 
 ## Autor
 
