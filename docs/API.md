@@ -20,45 +20,50 @@ Esta documentação descreve as rotas da API REST do Sistema de Chamados, inclui
 
 ### 2.1. Departments
 
-| Rota                | Método HTTP | Sucesso | Erros        | Observações |
-| ------------------- | ----------- | ------- | ------------ | ----------- |
-| `/departments`      | `POST`      | `201`   | `400`        | —           |
-| `/departments`      | `GET`       | `200`   | —            | Obs. 1      |
-| `/departments/{id}` | `GET`       | `200`   | `404`        | —           |
-| `/departments/{id}` | `PUT`       | `200`   | `404`        | —           |
-| `/departments/{id}` | `DELETE`    | `200`   | `404`, `409` | Obs. 2      |
+| Rota                           | Método HTTP | Sucesso | Erros        | Observações |
+| ------------------------------ | ----------- | ------- | ------------ | ----------- |
+| `/departments`                 | `POST`      | `201`   | `400`        | —           |
+| `/departments`                 | `GET`       | `200`   | —            | Obs. 1      |
+| `/departments/{id}`            | `GET`       | `200`   | `404`        | —           |
+| `/departments/{id}`            | `PUT`       | `200`   | `404`        | —           |
+| `/departments/{id}`            | `DELETE`    | `200`   | `404`, `409` | Obs. 2      |
+| `/departments/{id}/categories` | `GET`       | `200`   | `404`        | Obs. 4      |
 
 ### 2.2. Categories
 
-| Rota                           | Método HTTP | Sucesso | Erros        | Observações |
-| ------------------------------ | ----------- | ------- | ------------ | ----------- |
-| `/categories`                  | `POST`      | `201`   | `400`, `404` | —           |
-| `/categories`                  | `GET`       | `200`   | —            | Obs. 3      |
-| `/categories/{id}`             | `GET`       | `200`   | `404`        | —           |
-| `/categories/{id}`             | `PUT`       | `200`   | `404`        | —           |
-| `/categories/{id}`             | `DELETE`    | `200`   | `404`, `409` | Obs. 2      |
-| `/departments/{id}/categories` | `GET`       | `200`   | `404`        | Obs. 4      |
+| Rota               | Método HTTP | Sucesso | Erros        | Observações |
+| ------------------ | ----------- | ------- | ------------ | ----------- |
+| `/categories`      | `POST`      | `201`   | `400`, `404` | —           |
+| `/categories`      | `GET`       | `200`   | —            | Obs. 3      |
+| `/categories/{id}` | `GET`       | `200`   | `404`        | —           |
+| `/categories/{id}` | `PUT`       | `200`   | `404`        | —           |
+| `/categories/{id}` | `DELETE`    | `200`   | `404`, `409` | Obs. 2      |
 
 ### 2.3. Users
 
-| Rota          | Método HTTP | Sucesso | Erros        | Observações |
-| ------------- | ----------- | ------- | ------------ | ----------- |
-| `/users`      | `POST`      | `201`   | `400`, `409` | Obs. 5      |
-| `/users`      | `GET`       | `200`   | —            | Obs. 6      |
-| `/users/{id}` | `GET`       | `200`   | `404`        | —           |
-| `/users/{id}` | `PUT`       | `200`   | `404`, `409` | Obs. 5      |
+| Rota                  | Método HTTP | Sucesso | Erros        | Observações |
+| --------------------- | ----------- | ------- | ------------ | ----------- |
+| `/users`              | `POST`      | `201`   | `400`, `409` | Obs. 5      |
+| `/users`              | `GET`       | `200`   | —            | Obs. 6      |
+| `/users/{id}`         | `GET`       | `200`   | `404`        | —           |
+| `/users/{id}`         | `PUT`       | `200`   | `404`, `409` | Obs. 5      |
+| `/users/{id}/tickets` | `GET`       | `200`   | `404`        | Obs. 10     |
 
 ### 2.4. Tickets
 
+| Rota                    | Método HTTP | Sucesso | Erros               | Observações |
+| ----------------------- | ----------- | ------- | ------------------- | ----------- |
+| `/tickets`              | `POST`      | `201`   | `400`, `404`        | Obs. 7      |
+| `/tickets`              | `GET`       | `200`   | —                   | Obs. 8      |
+| `/tickets/{id}`         | `GET`       | `200`   | `404`               | Obs. 9      |
+| `/tickets/{id}/assign`  | `PATCH`     | `200`   | `404`, `409`        | Obs. 11     |
+| `/tickets/{id}/resolve` | `PATCH`     | `200`   | `400`, `404`, `409` | Obs. 12     |
+| `/tickets/{id}/cancel`  | `PATCH`     | `200`   | `404`, `409`        | Obs. 13     |
+
+### 2.5. Interactions
+
 | Rota                         | Método HTTP | Sucesso | Erros               | Observações |
 | ---------------------------- | ----------- | ------- | ------------------- | ----------- |
-| `/tickets`                   | `POST`      | `201`   | `400`, `404`        | Obs. 7      |
-| `/tickets`                   | `GET`       | `200`   | —                   | Obs. 8      |
-| `/tickets/{id}`              | `GET`       | `200`   | `404`               | Obs. 9      |
-| `/users/{id}/tickets`        | `GET`       | `200`   | `404`               | Obs. 10     |
-| `/tickets/{id}/assign`       | `PATCH`     | `200`   | `404`, `409`        | Obs. 11     |
-| `/tickets/{id}/resolve`      | `PATCH`     | `200`   | `400`, `404`, `409` | Obs. 12     |
-| `/tickets/{id}/cancel`       | `PATCH`     | `200`   | `404`, `409`        | Obs. 13     |
 | `/tickets/{id}/interactions` | `POST`      | `201`   | `400`, `404`, `409` | Obs. 14     |
 
 ---
