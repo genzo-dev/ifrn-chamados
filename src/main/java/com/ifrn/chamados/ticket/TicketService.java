@@ -137,7 +137,7 @@ public class TicketService {
 
         if (ticket.getStatus() != Status.EM_ANDAMENTO) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, 
-                "Apenas chamados com status EM_ATENDIMENTO podem ser resolvidos.");
+                "Apenas chamados com status EM_ANDAMENTO podem ser resolvidos.");
         }
 
         Users technician = EntityFinder.findByIdOrThrow(usersRepository, dto.technicianId(), "Técnico");

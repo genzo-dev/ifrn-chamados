@@ -25,4 +25,5 @@ public interface UsersRepository extends JpaRepository<Users, Long>{
         @Param("departmentId") Long departmentId,
         Pageable pageable
     );
+    boolean existsByDepartmentId(Long departmentId);
 }

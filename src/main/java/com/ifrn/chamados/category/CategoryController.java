@@ -96,7 +96,7 @@ public class CategoryController {
     description = "Departamento ou Categoria não encontrado", 
     content = @Content(schema = @Schema(hidden = true))
   )
-  public ResponseEntity<CategoryResponseDTO> update(@PathVariable Long id, @RequestBody CategoryUpdateDTO dto) {
+  public ResponseEntity<CategoryResponseDTO> update(@PathVariable Long id, @RequestBody @Valid CategoryUpdateDTO dto) {
     Category updated = categoryService.updateById(id, dto);
     return ResponseEntity.ok(CategoryResponseDTO.fromEntity(updated));
   }

@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.ifrn.chamados.category.dto.CategoryCreateDTO;
 import com.ifrn.chamados.category.dto.CategoryUpdateDTO;
@@ -49,6 +50,7 @@ public class CategoryService {
         return EntityFinder.findByIdOrThrow(categoryRepository, id, "Categoria");
     }
 
+    @Transactional 
     public Category updateById(Long id, CategoryUpdateDTO dto) {
         Category category = EntityFinder.findByIdOrThrow(categoryRepository, id, "Categoria");
 
@@ -68,6 +70,7 @@ public class CategoryService {
         return categoryRepository.save(category);
   }
 
+    @Transactional 
     public Category deleteById(Long id) {
         Category category = EntityFinder.findByIdOrThrow(categoryRepository, id, "Categoria");
 
