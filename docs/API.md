@@ -119,7 +119,7 @@ A listagem de categorias deve permitir filtros pelos seguintes campos:
 
 ### Obs. 4 — Categorias de um setor
 
-A rota `GET /departments/{id}/categories` deve retornar exclusivamente as categorias pertencentes ao setor informado.
+A rota `GET /department/{id}/category` deve retornar exclusivamente as categorias pertencentes ao setor informado.
 
 Caso o setor não exista, a API deve retornar `404 Not Found`.
 
@@ -169,7 +169,7 @@ Caso o chamado não exista, a API deve retornar `404 Not Found`.
 
 ### Obs. 10 — Chamados por usuário
 
-A rota `GET /users/{id}/tickets` deve retornar:
+A rota `GET /user/{id}/ticket` deve retornar:
 
 - Os chamados abertos pelo solicitante informado; ou
 - Os chamados atribuídos ao técnico informado.

@@ -114,7 +114,7 @@ public class DepartmentController {
     description = "Departamento não encontrado", 
     content = @Content(schema = @Schema(hidden = true))
   )
-  public ResponseEntity<DepartmentResponseDTO> update(@PathVariable Long id, @RequestBody DepartmentUpdateDTO dto) {
+  public ResponseEntity<DepartmentResponseDTO> update(@PathVariable Long id, @RequestBody @Valid DepartmentUpdateDTO dto) {
     Department departmentUpdated = departmentService.updateById(id, dto);
     return ResponseEntity.ok(DepartmentResponseDTO.fromEntity(departmentUpdated));
   }
@@ -132,7 +132,7 @@ public class DepartmentController {
   )
   @ApiResponse(
     responseCode = "409", 
-    description = "Existe algum chamado vinculado ao departamento em questão",
+    description = "Existe chamado, categoria ou usuário vinculado ao departamento",
     content = @Content(schema = @Schema(hidden = true))
   )
   public ResponseEntity<DepartmentResponseDTO> delete(@PathVariable Long id) {

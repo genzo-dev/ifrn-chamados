@@ -19,4 +19,5 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
       @Param("departmentId") Long departmentId,
       Pageable pageable
   );
+  boolean existsByDepartmentId(Long departmentId);
 }
