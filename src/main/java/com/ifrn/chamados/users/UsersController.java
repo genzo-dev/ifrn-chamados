@@ -1,0 +1,130 @@
+package com.ifrn.chamados.users;
+
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.ifrn.chamados.common.enums.Status;
+import com.ifrn.chamados.common.enums.UserType;
+import com.ifrn.chamados.ticket.Ticket;
+import com.ifrn.chamados.ticket.TicketService;
+import com.ifrn.chamados.ticket.dto.TicketResponseDTO;
+import com.ifrn.chamados.users.dto.UserCreateDTO;
+import com.ifrn.chamados.users.dto.UserResponseDTO;
+import com.ifrn.chamados.users.dto.UserUpdateDTO;
+
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+
+@RestController
+@RequestMapping("/user")
+@RequiredArgsConstructor 
+public class UsersController {
+    private final UsersService usersService;
+    private final TicketService ticketService;
+
+    @PostMapping
+    @ApiResponse(
+        responseCode = "201", 
+        description = "Usuário criado com sucesso", 
+        content = @Content(schema = @Schema(hidden = true))
+    )
+    @ApiResponse(
+        responseCode = "400", 
+        description = "Dados inválidos ou fornecidos incorretamente", 
+        content = @Content(schema = @Schema(hidden = true))
+    )
+    @ApiResponse(
+        responseCode = "409", 
+        description = "Já existe um usuário com esse e-mail", 
+        content = @Content(schema = @Schema(hidden = true))
+    )
+    public ResponseEntity<UserResponseDTO> create(@RequestBody @Valid UserCreateDTO dto) {
+        Users created = usersService.create(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(UserResponseDTO.fromEntity(created));
+    }
+
+    @GetMapping
+    @ApiResponse(
+        responseCode = "200", 
+        description = "Usuário(s) encontrados/filtrados", 
+        content = @Content(schema = @Schema(hidden = true))
+    )
+    public ResponseEntity<Page<UserResponseDTO>> list(
+        @RequestParam(required = false, name = "name") String name,
+        @RequestParam(required = false, name = "userType") UserType userType,
+        @RequestParam(required = false, name = "departmentId") Long departmentId,
+        @ParameterObject 
+        @PageableDefault(size = 10, sort = "name") Pageable pageable) {
+        Page<Users> usersPage = usersService.findAllFiltered(name, userType, departmentId, pageable);
+        return ResponseEntity.ok(usersPage.map(UserResponseDTO::fromEntity));
+    }
+
+    @GetMapping("{id}")
+    @ApiResponse(
+        responseCode = "200", 
+        description = "Usuário encontrado com sucesso", 
+        content = @Content(schema = @Schema(hidden = true))
+    )
+    @ApiResponse(
+        responseCode = "404", 
+        description = "Usuário não encontrado", 
+        content = @Content(schema = @Schema(hidden = true))
+    )
+    public ResponseEntity<UserResponseDTO> findById(@PathVariable Long id) {
+        Users searched = usersService.findById(id);
+        return ResponseEntity.ok(UserResponseDTO.fromEntity(searched));
+    }
+
+    @GetMapping("/{id}/ticket")
+    @ApiResponse(
+        responseCode = "200", 
+        description = "Chamados atribuídos a um solicitante ou técnico encontrados com sucesso", 
+        content = @Content(schema = @Schema(hidden = true))
+    )
+    public ResponseEntity<Page<TicketResponseDTO>> getUserTickets(
+            @PathVariable Long id,
+            @RequestParam(required = false, name = "status") Status status,
+            @ParameterObject
+            @PageableDefault(size = 10, sort = "openingDate", direction = Sort.Direction.DESC) Pageable pageable) {
+
+        Page<Ticket> tickets = ticketService.findByUserIdAndStatus(id, status, pageable);
+        return ResponseEntity.ok(tickets.map(TicketResponseDTO::fromEntity));
+    }
+
+    @PutMapping("{id}")
+    @ApiResponse(
+        responseCode = "200", 
+        description = "Usuário atualizado com sucesso", 
+        content = @Content(schema = @Schema(hidden = true))
+    )
+    @ApiResponse(
+        responseCode = "404", 
+        description = "Departamento não encontrado", 
+        content = @Content(schema = @Schema(hidden = true))
+    )
+    @ApiResponse(
+        responseCode = "409", 
+        description = "Já existe um usuário com esse e-mail", 
+        content = @Content(schema = @Schema(hidden = true))
+    )
+    public ResponseEntity<UserResponseDTO> update(@PathVariable Long id, @RequestBody @Valid UserUpdateDTO dto) {
+        Users updated = usersService.updateById(id, dto);
+        return ResponseEntity.ok(UserResponseDTO.fromEntity(updated));
+    }
+}

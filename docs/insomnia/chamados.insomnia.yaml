@@ -1,0 +1,1134 @@
+type: collection.insomnia.rest/5.0
+schema_version: "5.1"
+name: Sistema de Chamados IFRN
+meta:
+  id: wrk_chamados_ifrn
+collection:
+  - name: "00 - Health"
+    meta:
+      id: fld_health
+    children:
+      - name: "Home"
+        meta:
+          id: req_health_home
+        method: GET
+        url: "{{base_url}}/"
+        description: "Verifica se a API está no ar."
+        body: {}
+        parameters: []
+        headers: []
+        authentication: {}
+        scripts:
+          afterResponse: |
+            insomnia.test('status 200', () => {
+              insomnia.expect(insomnia.response.code).to.eql(200);
+            });
+        pathParameters: null
+
+  - name: "01 - Departments"
+    meta:
+      id: fld_departments
+    children:
+      - name: "Criar setor"
+        meta:
+          id: req_department_create
+        method: POST
+        url: "{{base_url}}/department"
+        description: "Cria um setor e salva o ID em created_department_id."
+        body:
+          mimeType: application/json
+          text: |
+            {
+              "name": "Setor Insomnia",
+              "abbreviation": "INSOM"
+            }
+        parameters: []
+        headers: []
+        authentication: {}
+        scripts:
+          afterResponse: |
+            insomnia.test('status 201', () => {
+              insomnia.expect(insomnia.response.code).to.eql(201);
+            });
+
+            if (insomnia.response.code === 201) {
+              const body = insomnia.response.json();
+              insomnia.environment.set('created_department_id', body.id);
+            }
+        pathParameters: null
+      - name: "Listar setores"
+        meta:
+          id: req_department_list
+        method: GET
+        url: "{{base_url}}/department"
+        description: "Lista setores paginados. O filtro nome fica desativado por padrão."
+        body: {}
+        parameters:
+          - name: nome
+            value: "COTIC"
+            disabled: true
+          - name: page
+            value: "{{page}}"
+          - name: size
+            value: "{{size}}"
+          - name: sort
+            value: "{{sort_name}}"
+        headers: []
+        authentication: {}
+        scripts:
+          afterResponse: |
+            insomnia.test('status 200', () => {
+              insomnia.expect(insomnia.response.code).to.eql(200);
+            });
+        pathParameters: null
+      - name: "Buscar setor"
+        meta:
+          id: req_department_find
+        method: GET
+        url: "{{base_url}}/department/{{department_id}}"
+        description: "Busca o setor informado em department_id."
+        body: {}
+        parameters: []
+        headers: []
+        authentication: {}
+        scripts:
+          afterResponse: |
+            insomnia.test('status 200', () => {
+              insomnia.expect(insomnia.response.code).to.eql(200);
+            });
+        pathParameters: null
+      - name: "Categorias do setor"
+        meta:
+          id: req_department_categories
+        method: GET
+        url: "{{base_url}}/department/{{department_id}}/category"
+        description: "Lista as categorias vinculadas ao setor."
+        body: {}
+        parameters: []
+        headers: []
+        authentication: {}
+        scripts:
+          afterResponse: |
+            insomnia.test('status 200', () => {
+              insomnia.expect(insomnia.response.code).to.eql(200);
+            });
+        pathParameters: null
+      - name: "Atualizar setor"
+        meta:
+          id: req_department_update
+        method: PUT
+        url: "{{base_url}}/department/{{department_id}}"
+        description: "Atualiza o setor 1 com os dados atuais do seed."
+        body:
+          mimeType: application/json
+          text: |
+            {
+              "name": "Tecnologia da Informação",
+              "abbreviation": "COTIC"
+            }
+        parameters: []
+        headers: []
+        authentication: {}
+        scripts:
+          afterResponse: |
+            insomnia.test('status 200', () => {
+              insomnia.expect(insomnia.response.code).to.eql(200);
+            });
+        pathParameters: null
+      - name: "Excluir setor criado"
+        meta:
+          id: req_department_delete
+        method: DELETE
+        url: "{{base_url}}/department/{{created_department_id}}"
+        description: "Exclui o setor criado pela requisição Criar setor."
+        body: {}
+        parameters: []
+        headers: []
+        authentication: {}
+        scripts:
+          afterResponse: |
+            insomnia.test('status 200', () => {
+              insomnia.expect(insomnia.response.code).to.eql(200);
+            });
+        pathParameters: null
+
+  - name: "02 - Categories"
+    meta:
+      id: fld_categories
+    children:
+      - name: "Criar categoria"
+        meta:
+          id: req_category_create
+        method: POST
+        url: "{{base_url}}/category"
+        description: "Cria uma categoria e salva o ID em created_category_id."
+        body:
+          mimeType: application/json
+          text: |
+            {
+              "name": "Impressora",
+              "description": "Problemas de impressão",
+              "department_id": {{department_id}}
+            }
+        parameters: []
+        headers: []
+        authentication: {}
+        scripts:
+          afterResponse: |
+            insomnia.test('status 201', () => {
+              insomnia.expect(insomnia.response.code).to.eql(201);
+            });
+
+            if (insomnia.response.code === 201) {
+              const body = insomnia.response.json();
+              insomnia.environment.set('created_category_id', body.id);
+            }
+        pathParameters: null
+      - name: "Listar categorias"
+        meta:
+          id: req_category_list
+        method: GET
+        url: "{{base_url}}/category"
+        description: "Lista categorias paginadas. Os filtros ficam desativados por padrão."
+        body: {}
+        parameters:
+          - name: name
+            value: "Internet"
+            disabled: true
+          - name: departmentId
+            value: "{{department_id}}"
+            disabled: true
+          - name: page
+            value: "{{page}}"
+          - name: size
+            value: "{{size}}"
+          - name: sort
+            value: "{{sort_name}}"
+        headers: []
+        authentication: {}
+        scripts:
+          afterResponse: |
+            insomnia.test('status 200', () => {
+              insomnia.expect(insomnia.response.code).to.eql(200);
+            });
+        pathParameters: null
+      - name: "Buscar categoria"
+        meta:
+          id: req_category_find
+        method: GET
+        url: "{{base_url}}/category/{{category_id}}"
+        description: "Busca a categoria informada em category_id."
+        body: {}
+        parameters: []
+        headers: []
+        authentication: {}
+        scripts:
+          afterResponse: |
+            insomnia.test('status 200', () => {
+              insomnia.expect(insomnia.response.code).to.eql(200);
+            });
+        pathParameters: null
+      - name: "Atualizar categoria"
+        meta:
+          id: req_category_update
+        method: PUT
+        url: "{{base_url}}/category/{{category_id}}"
+        description: "Atualiza a categoria 1. O payload usa departmentId, como no código atual."
+        body:
+          mimeType: application/json
+          text: |
+            {
+              "name": "Internet/Wi-Fi",
+              "description": "Problemas de conexão de rede",
+              "departmentId": {{department_id}}
+            }
+        parameters: []
+        headers: []
+        authentication: {}
+        scripts:
+          afterResponse: |
+            insomnia.test('status 200', () => {
+              insomnia.expect(insomnia.response.code).to.eql(200);
+            });
+        pathParameters: null
+      - name: "Excluir categoria criada"
+        meta:
+          id: req_category_delete
+        method: DELETE
+        url: "{{base_url}}/category/{{created_category_id}}"
+        description: "Exclui a categoria criada pela requisição Criar categoria."
+        body: {}
+        parameters: []
+        headers: []
+        authentication: {}
+        scripts:
+          afterResponse: |
+            insomnia.test('status 200', () => {
+              insomnia.expect(insomnia.response.code).to.eql(200);
+            });
+        pathParameters: null
+
+  - name: "03 - Users"
+    meta:
+      id: fld_users
+    children:
+      - name: "Criar usuário"
+        meta:
+          id: req_user_create
+        method: POST
+        url: "{{base_url}}/user"
+        description: "Cria um solicitante e salva o ID em created_user_id."
+        body:
+          mimeType: application/json
+          text: |
+            {
+              "name": "Usuário Insomnia",
+              "email": "usuario.insomnia@ifrn.edu.br",
+              "registrationNumber": "2023999",
+              "userType": "SOLICITANTE",
+              "departmentId": null
+            }
+        parameters: []
+        headers: []
+        authentication: {}
+        scripts:
+          afterResponse: |
+            insomnia.test('status 201', () => {
+              insomnia.expect(insomnia.response.code).to.eql(201);
+            });
+
+            if (insomnia.response.code === 201) {
+              const body = insomnia.response.json();
+              insomnia.environment.set('created_user_id', body.id);
+            }
+        pathParameters: null
+      - name: "Listar usuários"
+        meta:
+          id: req_user_list
+        method: GET
+        url: "{{base_url}}/user"
+        description: "Lista usuários paginados. Os filtros ficam desativados por padrão."
+        body: {}
+        parameters:
+          - name: name
+            value: "José"
+            disabled: true
+          - name: userType
+            value: "{{user_type}}"
+            disabled: true
+          - name: departmentId
+            value: "{{department_id}}"
+            disabled: true
+          - name: page
+            value: "{{page}}"
+          - name: size
+            value: "{{size}}"
+          - name: sort
+            value: "{{sort_name}}"
+        headers: []
+        authentication: {}
+        scripts:
+          afterResponse: |
+            insomnia.test('status 200', () => {
+              insomnia.expect(insomnia.response.code).to.eql(200);
+            });
+        pathParameters: null
+      - name: "Buscar usuário"
+        meta:
+          id: req_user_find
+        method: GET
+        url: "{{base_url}}/user/{{user_id}}"
+        description: "Busca o usuário informado em user_id."
+        body: {}
+        parameters: []
+        headers: []
+        authentication: {}
+        scripts:
+          afterResponse: |
+            insomnia.test('status 200', () => {
+              insomnia.expect(insomnia.response.code).to.eql(200);
+            });
+        pathParameters: null
+      - name: "Atualizar usuário"
+        meta:
+          id: req_user_update
+        method: PUT
+        url: "{{base_url}}/user/{{user_id}}"
+        description: "Atualiza o usuário 3 com os dados atuais do seed."
+        body:
+          mimeType: application/json
+          text: |
+            {
+              "name": "José Solicitante",
+              "email": "jose.aluno@escolar.ifrn.edu.br",
+              "userType": "SOLICITANTE",
+              "departmentId": null
+            }
+        parameters: []
+        headers: []
+        authentication: {}
+        scripts:
+          afterResponse: |
+            insomnia.test('status 200', () => {
+              insomnia.expect(insomnia.response.code).to.eql(200);
+            });
+        pathParameters: null
+      - name: "Chamados do usuário"
+        meta:
+          id: req_user_tickets
+        method: GET
+        url: "{{base_url}}/user/{{user_id}}/ticket"
+        description: "Lista chamados do usuário. O filtro status fica desativado por padrão."
+        body: {}
+        parameters:
+          - name: status
+            value: "{{status}}"
+            disabled: true
+          - name: page
+            value: "{{page}}"
+          - name: size
+            value: "{{size}}"
+          - name: sort
+            value: "{{sort_opening}}"
+        headers: []
+        authentication: {}
+        scripts:
+          afterResponse: |
+            insomnia.test('status 200', () => {
+              insomnia.expect(insomnia.response.code).to.eql(200);
+            });
+        pathParameters: null
+
+  - name: "04 - Tickets"
+    meta:
+      id: fld_tickets
+    children:
+      - name: "Criar chamado"
+        meta:
+          id: req_ticket_create
+        method: POST
+        url: "{{base_url}}/ticket"
+        description: "Cria o chamado principal e salva o ID em ticket_id e created_ticket_id."
+        body:
+          mimeType: application/json
+          text: |
+            {
+              "title": "Sem conexão com a internet",
+              "description": "Não consigo acessar a rede Wi-Fi.",
+              "location": "Sala 10",
+              "requesterId": {{requester_id}},
+              "categoryId": {{category_id}},
+              "priority": "{{priority}}"
+            }
+        parameters: []
+        headers: []
+        authentication: {}
+        scripts:
+          afterResponse: |
+            insomnia.test('status 201', () => {
+              insomnia.expect(insomnia.response.code).to.eql(201);
+            });
+
+            if (insomnia.response.code === 201) {
+              const body = insomnia.response.json();
+              insomnia.environment.set('ticket_id', body.id);
+              insomnia.environment.set('created_ticket_id', body.id);
+            }
+        pathParameters: null
+      - name: "Criar chamado para cancelar"
+        meta:
+          id: req_ticket_create_cancel
+        method: POST
+        url: "{{base_url}}/ticket"
+        description: "Cria um chamado separado e salva o ID em ticket_id_cancel."
+        body:
+          mimeType: application/json
+          text: |
+            {
+              "title": "Sem conexão com a internet",
+              "description": "Não consigo acessar a rede Wi-Fi.",
+              "location": "Sala 10",
+              "requesterId": {{requester_id}},
+              "categoryId": {{category_id}},
+              "priority": "{{priority}}"
+            }
+        parameters: []
+        headers: []
+        authentication: {}
+        scripts:
+          afterResponse: |
+            insomnia.test('status 201', () => {
+              insomnia.expect(insomnia.response.code).to.eql(201);
+            });
+
+            if (insomnia.response.code === 201) {
+              const body = insomnia.response.json();
+              insomnia.environment.set('ticket_id_cancel', body.id);
+            }
+        pathParameters: null
+      - name: "Criar chamado para erros"
+        meta:
+          id: req_ticket_create_error
+        method: POST
+        url: "{{base_url}}/ticket"
+        description: "Cria um chamado aberto para os cenários de erro e interação."
+        body:
+          mimeType: application/json
+          text: |
+            {
+              "title": "Sem conexão com a internet",
+              "description": "Não consigo acessar a rede Wi-Fi.",
+              "location": "Sala 10",
+              "requesterId": {{requester_id}},
+              "categoryId": {{category_id}},
+              "priority": "{{priority}}"
+            }
+        parameters: []
+        headers: []
+        authentication: {}
+        scripts:
+          afterResponse: |
+            insomnia.test('status 201', () => {
+              insomnia.expect(insomnia.response.code).to.eql(201);
+            });
+
+            if (insomnia.response.code === 201) {
+              const body = insomnia.response.json();
+              insomnia.environment.set('ticket_id_error', body.id);
+            }
+        pathParameters: null
+      - name: "Listar chamados"
+        meta:
+          id: req_ticket_list
+        method: GET
+        url: "{{base_url}}/ticket"
+        description: "Lista chamados paginados. Os filtros ficam desativados por padrão."
+        body: {}
+        parameters:
+          - name: status
+            value: "{{status}}"
+            disabled: true
+          - name: priority
+            value: "{{priority}}"
+            disabled: true
+          - name: setorId
+            value: "{{department_id}}"
+            disabled: true
+          - name: categoriaId
+            value: "{{category_id}}"
+            disabled: true
+          - name: solicitanteId
+            value: "{{requester_id}}"
+            disabled: true
+          - name: tecnicoId
+            value: "{{technician_id}}"
+            disabled: true
+          - name: dataInicio
+            value: "2026-01-01T00:00:00"
+            disabled: true
+          - name: dataFim
+            value: "2026-12-31T23:59:59"
+            disabled: true
+          - name: page
+            value: "{{page}}"
+          - name: size
+            value: "{{size}}"
+          - name: sort
+            value: "{{sort_opening}}"
+        headers: []
+        authentication: {}
+        scripts:
+          afterResponse: |
+            insomnia.test('status 200', () => {
+              insomnia.expect(insomnia.response.code).to.eql(200);
+            });
+        pathParameters: null
+      - name: "Buscar chamado"
+        meta:
+          id: req_ticket_find
+        method: GET
+        url: "{{base_url}}/ticket/{{ticket_id}}"
+        description: "Busca o chamado principal."
+        body: {}
+        parameters: []
+        headers: []
+        authentication: {}
+        scripts:
+          afterResponse: |
+            insomnia.test('status 200', () => {
+              insomnia.expect(insomnia.response.code).to.eql(200);
+            });
+        pathParameters: null
+      - name: "Assumir chamado"
+        meta:
+          id: req_ticket_assign
+        method: PATCH
+        url: "{{base_url}}/ticket/{{ticket_id}}/assign"
+        description: "Assume o chamado principal com o técnico 1."
+        body:
+          mimeType: application/json
+          text: |
+            {
+              "technicianId": {{technician_id}}
+            }
+        parameters: []
+        headers: []
+        authentication: {}
+        scripts:
+          afterResponse: |
+            insomnia.test('status 200', () => {
+              insomnia.expect(insomnia.response.code).to.eql(200);
+            });
+
+            if (insomnia.response.code === 200) {
+              const body = insomnia.response.json();
+              insomnia.test('status EM_ANDAMENTO', () => {
+                insomnia.expect(body.status).to.eql('EM_ANDAMENTO');
+              });
+            }
+        pathParameters: null
+      - name: "Cancelar chamado"
+        meta:
+          id: req_ticket_cancel
+        method: PATCH
+        url: "{{base_url}}/ticket/{{ticket_id_cancel}}/cancel"
+        description: "Cancela o chamado criado para cancelamento."
+        body:
+          mimeType: application/json
+          text: |
+            {
+              "requesterId": {{requester_id}}
+            }
+        parameters: []
+        headers: []
+        authentication: {}
+        scripts:
+          afterResponse: |
+            insomnia.test('status 200', () => {
+              insomnia.expect(insomnia.response.code).to.eql(200);
+            });
+
+            if (insomnia.response.code === 200) {
+              const body = insomnia.response.json();
+              insomnia.test('status CANCELADO', () => {
+                insomnia.expect(body.status).to.eql('CANCELADO');
+              });
+            }
+        pathParameters: null
+
+  - name: "05 - Interactions"
+    meta:
+      id: fld_interactions
+    children:
+      - name: "Criar interação"
+        meta:
+          id: req_interaction_create
+        method: POST
+        url: "{{base_url}}/ticket/{{ticket_id}}/interaction"
+        description: "Registra uma interação no chamado principal enquanto ele está em andamento."
+        body:
+          mimeType: application/json
+          text: |
+            {
+              "text": "Chamado em análise.",
+              "authorId": {{requester_id}}
+            }
+        parameters: []
+        headers: []
+        authentication: {}
+        scripts:
+          afterResponse: |
+            insomnia.test('status 201', () => {
+              insomnia.expect(insomnia.response.code).to.eql(201);
+            });
+
+            if (insomnia.response.code === 201) {
+              const body = insomnia.response.json();
+              insomnia.environment.set('created_interaction_id', body.id);
+            }
+        pathParameters: null
+      - name: "Resolver chamado"
+        meta:
+          id: req_ticket_resolve
+        method: PATCH
+        url: "{{base_url}}/ticket/{{ticket_id}}/resolve"
+        description: "Resolve o chamado principal com o técnico que o assumiu."
+        body:
+          mimeType: application/json
+          text: |
+            {
+              "technicianId": {{technician_id}},
+              "solution": "Roteador reiniciado e conexão restabelecida."
+            }
+        parameters: []
+        headers: []
+        authentication: {}
+        scripts:
+          afterResponse: |
+            insomnia.test('status 200', () => {
+              insomnia.expect(insomnia.response.code).to.eql(200);
+            });
+
+            if (insomnia.response.code === 200) {
+              const body = insomnia.response.json();
+              insomnia.test('status RESOLVIDO', () => {
+                insomnia.expect(body.status).to.eql('RESOLVIDO');
+              });
+            }
+        pathParameters: null
+
+  - name: "99 - Error Cases"
+    meta:
+      id: fld_errors
+    children:
+      - name: "400 - Criar setor sem nome"
+        meta:
+          id: req_error_department_create_400
+        method: POST
+        url: "{{base_url}}/department"
+        description: "Espera 400 por falta do campo name."
+        body:
+          mimeType: application/json
+          text: |
+            {
+              "abbreviation": "SEMNOME"
+            }
+        parameters: []
+        headers: []
+        authentication: {}
+        scripts:
+          afterResponse: |
+            insomnia.test('status 400', () => {
+              insomnia.expect(insomnia.response.code).to.eql(400);
+            });
+        pathParameters: null
+      - name: "400 - Criar categoria sem descrição"
+        meta:
+          id: req_error_category_create_400
+        method: POST
+        url: "{{base_url}}/category"
+        description: "Espera 400 por falta do campo description."
+        body:
+          mimeType: application/json
+          text: |
+            {
+              "name": "Sem descrição",
+              "department_id": {{department_id}}
+            }
+        parameters: []
+        headers: []
+        authentication: {}
+        scripts:
+          afterResponse: |
+            insomnia.test('status 400', () => {
+              insomnia.expect(insomnia.response.code).to.eql(400);
+            });
+        pathParameters: null
+      - name: "400 - Criar usuário com matrícula inválida"
+        meta:
+          id: req_error_user_create_400
+        method: POST
+        url: "{{base_url}}/user"
+        description: "Espera 400 porque a matrícula deve ter exatamente 7 caracteres."
+        body:
+          mimeType: application/json
+          text: |
+            {
+              "name": "Usuário Inválido",
+              "email": "invalido@ifrn.edu.br",
+              "registrationNumber": "123",
+              "userType": "SOLICITANTE",
+              "departmentId": null
+            }
+        parameters: []
+        headers: []
+        authentication: {}
+        scripts:
+          afterResponse: |
+            insomnia.test('status 400', () => {
+              insomnia.expect(insomnia.response.code).to.eql(400);
+            });
+        pathParameters: null
+      - name: "400 - Criar chamado sem título"
+        meta:
+          id: req_error_ticket_create_400
+        method: POST
+        url: "{{base_url}}/ticket"
+        description: "Espera 400 por falta do campo title."
+        body:
+          mimeType: application/json
+          text: |
+            {
+              "description": "Sem título",
+              "location": "Sala 10",
+              "requesterId": {{requester_id}},
+              "categoryId": {{category_id}},
+              "priority": "{{priority}}"
+            }
+        parameters: []
+        headers: []
+        authentication: {}
+        scripts:
+          afterResponse: |
+            insomnia.test('status 400', () => {
+              insomnia.expect(insomnia.response.code).to.eql(400);
+            });
+        pathParameters: null
+      - name: "400 - Criar interação com texto vazio"
+        meta:
+          id: req_error_interaction_create_400
+        method: POST
+        url: "{{base_url}}/ticket/{{ticket_id_error}}/interaction"
+        description: "Espera 400 por falta do campo text."
+        body:
+          mimeType: application/json
+          text: |
+            {
+              "text": "",
+              "authorId": {{requester_id}}
+            }
+        parameters: []
+        headers: []
+        authentication: {}
+        scripts:
+          afterResponse: |
+            insomnia.test('status 400', () => {
+              insomnia.expect(insomnia.response.code).to.eql(400);
+            });
+        pathParameters: null
+      - name: "404 - Buscar setor inexistente"
+        meta:
+          id: req_error_department_find_404
+        method: GET
+        url: "{{base_url}}/department/{{missing_id}}"
+        description: "Espera 404 para um setor inexistente."
+        body: {}
+        parameters: []
+        headers: []
+        authentication: {}
+        scripts:
+          afterResponse: |
+            insomnia.test('status 404', () => {
+              insomnia.expect(insomnia.response.code).to.eql(404);
+            });
+        pathParameters: null
+      - name: "404 - Buscar categoria inexistente"
+        meta:
+          id: req_error_category_find_404
+        method: GET
+        url: "{{base_url}}/category/{{missing_id}}"
+        description: "Espera 404 para uma categoria inexistente."
+        body: {}
+        parameters: []
+        headers: []
+        authentication: {}
+        scripts:
+          afterResponse: |
+            insomnia.test('status 404', () => {
+              insomnia.expect(insomnia.response.code).to.eql(404);
+            });
+        pathParameters: null
+      - name: "404 - Buscar usuário inexistente"
+        meta:
+          id: req_error_user_find_404
+        method: GET
+        url: "{{base_url}}/user/{{missing_id}}"
+        description: "Espera 404 para um usuário inexistente."
+        body: {}
+        parameters: []
+        headers: []
+        authentication: {}
+        scripts:
+          afterResponse: |
+            insomnia.test('status 404', () => {
+              insomnia.expect(insomnia.response.code).to.eql(404);
+            });
+        pathParameters: null
+      - name: "404 - Buscar chamado inexistente"
+        meta:
+          id: req_error_ticket_find_404
+        method: GET
+        url: "{{base_url}}/ticket/{{missing_id}}"
+        description: "Espera 404 para um chamado inexistente."
+        body: {}
+        parameters: []
+        headers: []
+        authentication: {}
+        scripts:
+          afterResponse: |
+            insomnia.test('status 404', () => {
+              insomnia.expect(insomnia.response.code).to.eql(404);
+            });
+        pathParameters: null
+      - name: "409 - Criar setor com sigla duplicada"
+        meta:
+          id: req_error_department_create_409
+        method: POST
+        url: "{{base_url}}/department"
+        description: "Espera 409 porque a sigla COTIC já existe."
+        body:
+          mimeType: application/json
+          text: |
+            {
+              "name": "Setor Duplicado",
+              "abbreviation": "COTIC"
+            }
+        parameters: []
+        headers: []
+        authentication: {}
+        scripts:
+          afterResponse: |
+            insomnia.test('status 409', () => {
+              insomnia.expect(insomnia.response.code).to.eql(409);
+            });
+        pathParameters: null
+      - name: "409 - Atualizar setor para sigla duplicada"
+        meta:
+          id: req_error_department_update_409
+        method: PUT
+        url: "{{base_url}}/department/{{department_id}}"
+        description: "Espera 409 porque a sigla MANUT pertence ao setor 2."
+        body:
+          mimeType: application/json
+          text: |
+            {
+              "name": "Tecnologia da Informação",
+              "abbreviation": "MANUT"
+            }
+        parameters: []
+        headers: []
+        authentication: {}
+        scripts:
+          afterResponse: |
+            insomnia.test('status 409', () => {
+              insomnia.expect(insomnia.response.code).to.eql(409);
+            });
+        pathParameters: null
+      - name: "409 - Criar categoria com nome duplicado"
+        meta:
+          id: req_error_category_create_409
+        method: POST
+        url: "{{base_url}}/category"
+        description: "Espera 409 porque Internet/Wi-Fi já existe."
+        body:
+          mimeType: application/json
+          text: |
+            {
+              "name": "Internet/Wi-Fi",
+              "description": "Categoria duplicada",
+              "department_id": {{department_id}}
+            }
+        parameters: []
+        headers: []
+        authentication: {}
+        scripts:
+          afterResponse: |
+            insomnia.test('status 409', () => {
+              insomnia.expect(insomnia.response.code).to.eql(409);
+            });
+        pathParameters: null
+      - name: "409 - Criar usuário com e-mail duplicado"
+        meta:
+          id: req_error_user_create_409
+        method: POST
+        url: "{{base_url}}/user"
+        description: "Espera 409 porque o e-mail do solicitante 3 já existe."
+        body:
+          mimeType: application/json
+          text: |
+            {
+              "name": "José Duplicado",
+              "email": "jose.aluno@escolar.ifrn.edu.br",
+              "registrationNumber": "2023997",
+              "userType": "SOLICITANTE",
+              "departmentId": null
+            }
+        parameters: []
+        headers: []
+        authentication: {}
+        scripts:
+          afterResponse: |
+            insomnia.test('status 409', () => {
+              insomnia.expect(insomnia.response.code).to.eql(409);
+            });
+        pathParameters: null
+      - name: "409 - Abrir chamado com técnico como solicitante"
+        meta:
+          id: req_error_ticket_create_409
+        method: POST
+        url: "{{base_url}}/ticket"
+        description: "Espera 409 porque o usuário 1 é TECNICO, não SOLICITANTE."
+        body:
+          mimeType: application/json
+          text: |
+            {
+              "title": "Chamado inválido",
+              "description": "Solicitante inválido",
+              "location": "Sala 10",
+              "requesterId": {{technician_id}},
+              "categoryId": {{category_id}},
+              "priority": "{{priority}}"
+            }
+        parameters: []
+        headers: []
+        authentication: {}
+        scripts:
+          afterResponse: |
+            insomnia.test('status 409', () => {
+              insomnia.expect(insomnia.response.code).to.eql(409);
+            });
+        pathParameters: null
+      - name: "409 - Excluir setor com vínculos"
+        meta:
+          id: req_error_department_delete_409
+        method: DELETE
+        url: "{{base_url}}/department/{{department_id}}"
+        description: "Espera 409 porque o setor 1 possui categorias e usuários."
+        body: {}
+        parameters: []
+        headers: []
+        authentication: {}
+        scripts:
+          afterResponse: |
+            insomnia.test('status 409', () => {
+              insomnia.expect(insomnia.response.code).to.eql(409);
+            });
+        pathParameters: null
+      - name: "409 - Assumir chamado com técnico de outro setor"
+        meta:
+          id: req_error_ticket_assign_409
+        method: PATCH
+        url: "{{base_url}}/ticket/{{ticket_id_error}}/assign"
+        description: "Espera 409 porque o técnico 2 pertence ao setor 2 e o chamado é do setor 1."
+        body:
+          mimeType: application/json
+          text: |
+            {
+              "technicianId": {{technician_id_2}}
+            }
+        parameters: []
+        headers: []
+        authentication: {}
+        scripts:
+          afterResponse: |
+            insomnia.test('status 409', () => {
+              insomnia.expect(insomnia.response.code).to.eql(409);
+            });
+        pathParameters: null
+      - name: "409 - Cancelar chamado por outro solicitante"
+        meta:
+          id: req_error_ticket_cancel_409
+        method: PATCH
+        url: "{{base_url}}/ticket/{{ticket_id_error}}/cancel"
+        description: "Espera 409 porque o chamado pertence ao solicitante 3."
+        body:
+          mimeType: application/json
+          text: |
+            {
+              "requesterId": {{other_requester_id}}
+            }
+        parameters: []
+        headers: []
+        authentication: {}
+        scripts:
+          afterResponse: |
+            insomnia.test('status 409', () => {
+              insomnia.expect(insomnia.response.code).to.eql(409);
+            });
+        pathParameters: null
+      - name: "409 - Assumir chamado já resolvido"
+        meta:
+          id: req_error_ticket_assign_resolved_409
+        method: PATCH
+        url: "{{base_url}}/ticket/{{ticket_id}}/assign"
+        description: "Espera 409 porque o chamado principal já foi resolvido."
+        body:
+          mimeType: application/json
+          text: |
+            {
+              "technicianId": {{technician_id}}
+            }
+        parameters: []
+        headers: []
+        authentication: {}
+        scripts:
+          afterResponse: |
+            insomnia.test('status 409', () => {
+              insomnia.expect(insomnia.response.code).to.eql(409);
+            });
+        pathParameters: null
+      - name: "409 - Cancelar chamado já cancelado"
+        meta:
+          id: req_error_ticket_cancel_cancelled_409
+        method: PATCH
+        url: "{{base_url}}/ticket/{{ticket_id_cancel}}/cancel"
+        description: "Espera 409 porque o chamado de cancelamento já foi cancelado."
+        body:
+          mimeType: application/json
+          text: |
+            {
+              "requesterId": {{requester_id}}
+            }
+        parameters: []
+        headers: []
+        authentication: {}
+        scripts:
+          afterResponse: |
+            insomnia.test('status 409', () => {
+              insomnia.expect(insomnia.response.code).to.eql(409);
+            });
+        pathParameters: null
+      - name: "409 - Interagir em chamado resolvido"
+        meta:
+          id: req_error_interaction_resolved_409
+        method: POST
+        url: "{{base_url}}/ticket/{{ticket_id}}/interaction"
+        description: "Espera 409 porque o chamado principal já foi resolvido."
+        body:
+          mimeType: application/json
+          text: |
+            {
+              "text": "Chamado em análise.",
+              "authorId": {{requester_id}}
+            }
+        parameters: []
+        headers: []
+        authentication: {}
+        scripts:
+          afterResponse: |
+            insomnia.test('status 409', () => {
+              insomnia.expect(insomnia.response.code).to.eql(409);
+            });
+        pathParameters: null
+
+environments:
+  name: Base Environment
+  meta:
+    id: env_base
+  data:
+    base_url: http://localhost:8080
+    page: 0
+    size: 10
+    sort_name: "name,asc"
+    sort_opening: "openingDate,desc"
+    department_id: 1
+    department_id_2: 2
+    created_department_id: 1
+    category_id: 1
+    category_id_2: 3
+    created_category_id: 1
+    requester_id: 3
+    other_requester_id: 4
+    technician_id: 1
+    technician_id_2: 2
+    user_id: 3
+    created_user_id: 3
+    ticket_id: 1
+    created_ticket_id: 1
+    ticket_id_cancel: 2
+    ticket_id_error: 3
+    created_interaction_id: 1
+    missing_id: 999999
+    status: ABERTO
+    priority: MEDIA
+    user_type: TECNICO
