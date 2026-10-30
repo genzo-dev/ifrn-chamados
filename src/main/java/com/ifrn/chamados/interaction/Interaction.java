@@ -18,7 +18,7 @@ public class Interaction {
     private Long id;
 
     private String text;
-    private LocalDateTime date_time;
+    private LocalDateTime dateTime;
 
     @ManyToOne 
     @JoinColumn(name = "ticket_id", nullable = false)

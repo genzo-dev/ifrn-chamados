@@ -11,6 +11,7 @@ import com.ifrn.chamados.category.dto.CategoryUpdateDTO;
 import com.ifrn.chamados.common.utils.EntityFinder;
 import com.ifrn.chamados.department.Department;
 import com.ifrn.chamados.department.DepartmentRepository;
+import com.ifrn.chamados.ticket.TicketRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -19,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 public class CategoryService {
     private final CategoryRepository categoryRepository;
     private final DepartmentRepository departmentRepository;
+    private final TicketRepository ticketRepository;
 
     public Category create(CategoryCreateDTO dto) {
         if (categoryRepository.existsByNameIgnoreCase(dto.name())) {
@@ -40,18 +42,7 @@ public class CategoryService {
     }
 
     public Page<Category> findAllFiltered(String name, Long departmentId, Pageable pageable) {
-        boolean hasName = name != null && !name.isBlank();
-        boolean hasDepartmentId = departmentId != null;
-
-        if (hasName && hasDepartmentId) {
-            return categoryRepository.findByNameContainingIgnoreCaseAndDepartmentId(name, departmentId, pageable);
-        } else if (hasName) {
-            return categoryRepository.findByNameContainingIgnoreCase(name, pageable);
-        } else if (hasDepartmentId) {
-            return categoryRepository.findByDepartmentId(departmentId, pageable);
-        }
-
-        return categoryRepository.findAll(pageable);
+        return categoryRepository.findWithFilters(name, departmentId, pageable);
     }
 
     public Category findById(Long id) {
@@ -78,9 +69,14 @@ public class CategoryService {
   }
 
     public Category deleteById(Long id) {
-        // TODO: adicionar regra que impeça exclusão em caso de chamado (ticket) vinculado 
-
         Category category = EntityFinder.findByIdOrThrow(categoryRepository, id, "Categoria");
+
+        if (ticketRepository.existsByCategoryId(id)) {
+            throw new ResponseStatusException(
+                HttpStatus.CONFLICT, 
+                "Não é possível excluir uma categoria que possui chamados vinculados."
+            );
+        }
 
         categoryRepository.delete(category);
 
