@@ -1,6 +1,8 @@
 package com.ifrn.chamados.ticket;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,7 +16,10 @@ import com.ifrn.chamados.common.enums.Priority;
 import com.ifrn.chamados.common.enums.Status;
 import com.ifrn.chamados.common.enums.UserType;
 import com.ifrn.chamados.common.utils.EntityFinder;
+import com.ifrn.chamados.interaction.Interaction;
+import com.ifrn.chamados.interaction.InteractionRepository;
 import com.ifrn.chamados.ticket.dto.TicketCreateDTO;
+import com.ifrn.chamados.ticket.dto.TicketDetailResponseDTO;
 import com.ifrn.chamados.users.Users;
 import com.ifrn.chamados.users.UsersRepository;
 
@@ -26,6 +31,7 @@ public class TicketService {
     private final TicketRepository ticketRepository;
     private final UsersRepository usersRepository;
     private final CategoryRepository categoryRepository;
+    private final InteractionRepository interactionRepository;
 
     public Ticket create(TicketCreateDTO dto) {
         Users requester = EntityFinder.findByIdOrThrow(usersRepository, dto.requesterId(), "Usuário solicitante");
@@ -73,5 +79,14 @@ public class TicketService {
             dataFim,
             pageable
         );
+    }
+
+    public TicketDetailResponseDTO findById(Long id) {
+        Ticket ticket = EntityFinder.findByIdOrThrow(ticketRepository, id, "Chamado");
+
+        List<Interaction> interactions = interactionRepository.findByTicketId(id);
+
+        return TicketDetailResponseDTO.fromEntity(ticket, interactions);
+
     }
 }

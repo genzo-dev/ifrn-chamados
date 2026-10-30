@@ -11,6 +11,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ifrn.chamados.common.enums.Priority;
 import com.ifrn.chamados.common.enums.Status;
 import com.ifrn.chamados.ticket.dto.TicketCreateDTO;
+import com.ifrn.chamados.ticket.dto.TicketDetailResponseDTO;
 import com.ifrn.chamados.ticket.dto.TicketResponseDTO;
 
 import io.swagger.v3.oas.annotations.media.Content;
@@ -83,5 +85,16 @@ public class TicketController {
         );
 
         return ResponseEntity.ok(page.map(TicketResponseDTO::fromEntity));
+    }
+
+    @GetMapping("/{id}")
+        @ApiResponse(
+        responseCode = "200", 
+        description = "Chamado encontrado", 
+        content = @Content(schema = @Schema(hidden = true))
+    )
+    public ResponseEntity<TicketDetailResponseDTO> findById(@PathVariable Long id) {
+        TicketDetailResponseDTO detail = ticketService.findById(id);
+        return ResponseEntity.ok(detail);
     }
 }
