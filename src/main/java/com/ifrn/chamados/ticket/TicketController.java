@@ -35,7 +35,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController 
-@RequestMapping("/tickets")
+@RequestMapping("/ticket")
 @RequiredArgsConstructor
 public class TicketController {
     private final TicketService ticketService;
@@ -74,7 +74,7 @@ public class TicketController {
     )
     public ResponseEntity<Page<TicketResponseDTO>> list(
             @RequestParam(required = false, name = "status") Status status,
-            @RequestParam(required = false, name = "prioridade") Priority priority,
+            @RequestParam(required = false, name = "priority") Priority priority,
             @RequestParam(required = false, name = "setorId") Long departmentId,
             @RequestParam(required = false, name = "categoriaId") Long categoryId,
             @RequestParam(required = false, name = "solicitanteId") Long requesterId,

@@ -175,53 +175,53 @@ Em `resources/db/migration`, as migrations Flyway mantêm o schema versionado e 
 
 ## Endpoints e Exemplos de Requisição
 
-### 1. `/departments`
+### 1. `/department`
 
-| Rota                           | Método HTTP | Sucesso | Erros        | Funcionalidade                       |
-| ------------------------------ | ----------- | ------- | ------------ | ------------------------------------ |
-| `/departments`                 | `POST`      | `201`   | `400`        | Criar setor                          |
-| `/departments`                 | `GET`       | `200`   | —            | Listar setores                       |
-| `/departments/{id}`            | `GET`       | `200`   | `404`        | Buscar um único setor                |
-| `/departments/{id}`            | `PUT`       | `200`   | `404`        | Atualizar setor                      |
-| `/departments/{id}`            | `DELETE`    | `200`   | `404`, `409` | Deletar setor                        |
-| `/departments/{id}/categories` | `GET`       | `200`   | `404`        | Listar categorias de um departamento |
+| Rota                        | Método HTTP | Sucesso | Erros        | Funcionalidade                       |
+| --------------------------- | ----------- | ------- | ------------ | ------------------------------------ |
+| `/department`               | `POST`      | `201`   | `400`        | Criar setor                          |
+| `/department`               | `GET`       | `200`   | —            | Listar setores                       |
+| `/department/{id}`          | `GET`       | `200`   | `404`        | Buscar um único setor                |
+| `/department/{id}`          | `PUT`       | `200`   | `404`        | Atualizar setor                      |
+| `/department/{id}`          | `DELETE`    | `200`   | `404`, `409` | Deletar setor                        |
+| `/department/{id}/category` | `GET`       | `200`   | `404`        | Listar categorias de um departamento |
 
-### 2. `/categories`
+### 2. `/category`
 
-| Rota               | Método HTTP | Sucesso | Erros        | Funcionalidade             |
-| ------------------ | ----------- | ------- | ------------ | -------------------------- |
-| `/categories`      | `POST`      | `201`   | `400`, `404` | Criar categoria            |
-| `/categories`      | `GET`       | `200`   | —            | Listar categorias          |
-| `/categories/{id}` | `GET`       | `200`   | `404`        | Buscar uma única categoria |
-| `/categories/{id}` | `PUT`       | `200`   | `404`        | Atualizar categoria        |
-| `/categories/{id}` | `DELETE`    | `200`   | `404`, `409` | Deletar categoria          |
+| Rota             | Método HTTP | Sucesso | Erros        | Funcionalidade             |
+| ---------------- | ----------- | ------- | ------------ | -------------------------- |
+| `/category`      | `POST`      | `201`   | `400`, `404` | Criar categoria            |
+| `/category`      | `GET`       | `200`   | —            | Listar categorias          |
+| `/category/{id}` | `GET`       | `200`   | `404`        | Buscar uma única categoria |
+| `/category/{id}` | `PUT`       | `200`   | `404`        | Atualizar categoria        |
+| `/category/{id}` | `DELETE`    | `200`   | `404`, `409` | Deletar categoria          |
 
-### 3. `/users`
+### 3. `/user`
 
-| Rota                  | Método HTTP | Sucesso | Erros        | Funcionalidade                                                    |
-| --------------------- | ----------- | ------- | ------------ | ----------------------------------------------------------------- |
-| `/users`              | `POST`      | `201`   | `400`, `409` | Cadastrar usuário                                                 |
-| `/users`              | `GET`       | `200`   | —            | Listar usuários                                                   |
-| `/users/{id}`         | `GET`       | `200`   | `404`        | Buscar um único usuário                                           |
-| `/users/{id}`         | `PUT`       | `200`   | `404`, `409` | Atualizar usuário                                                 |
-| `/users/{id}/tickets` | `GET`       | `200`   | `404`        | Listar chamados associados ao usuário como solicitante ou técnico |
+| Rota                | Método HTTP | Sucesso | Erros        | Funcionalidade                                                    |
+| ------------------- | ----------- | ------- | ------------ | ----------------------------------------------------------------- |
+| `/user`             | `POST`      | `201`   | `400`, `409` | Cadastrar usuário                                                 |
+| `/user`             | `GET`       | `200`   | —            | Listar usuários                                                   |
+| `/user/{id}`        | `GET`       | `200`   | `404`        | Buscar um único usuário                                           |
+| `/user/{id}`        | `PUT`       | `200`   | `404`, `409` | Atualizar usuário                                                 |
+| `/user/{id}/ticket` | `GET`       | `200`   | `404`        | Listar chamados associados ao usuário como solicitante ou técnico |
 
-### 4. Tickets
+### 4. Ticket
 
-| Rota                    | Método HTTP | Sucesso | Erros               | Funcionalidade                                   |
-| ----------------------- | ----------- | ------- | ------------------- | ------------------------------------------------ |
-| `/tickets`              | `POST`      | `201`   | `400`, `404`        | Abrir novo chamado                               |
-| `/tickets`              | `GET`       | `200`   | —                   | Listar chamados                                  |
-| `/tickets/{id}`         | `GET`       | `200`   | `404`               | Buscar um único chamado                          |
-| `/tickets/{id}/assign`  | `PATCH`     | `200`   | `404`, `409`        | Técnico assume chamado                           |
-| `/tickets/{id}/resolve` | `PATCH`     | `200`   | `400`, `404`, `409` | Técnico resolve chamado fornececendo uma solução |
-| `/tickets/{id}/cancel`  | `PATCH`     | `200`   | `404`, `409`        | Solicitante cancela o chamado aberto             |
+| Rota                   | Método HTTP | Sucesso | Erros               | Funcionalidade                                   |
+| ---------------------- | ----------- | ------- | ------------------- | ------------------------------------------------ |
+| `/ticket`              | `POST`      | `201`   | `400`, `404`        | Abrir novo chamado                               |
+| `/ticket`              | `GET`       | `200`   | —                   | Listar chamados                                  |
+| `/ticket/{id}`         | `GET`       | `200`   | `404`               | Buscar um único chamado                          |
+| `/ticket/{id}/assign`  | `PATCH`     | `200`   | `404`, `409`        | Técnico assume chamado                           |
+| `/ticket/{id}/resolve` | `PATCH`     | `200`   | `400`, `404`, `409` | Técnico resolve chamado fornececendo uma solução |
+| `/ticket/{id}/cancel`  | `PATCH`     | `200`   | `404`, `409`        | Solicitante cancela o chamado aberto             |
 
-### 5. Interactions
+### 5. Interaction
 
-| Rota                         | Método HTTP | Sucesso | Erros               | Funcionalidade                                |
-| ---------------------------- | ----------- | ------- | ------------------- | --------------------------------------------- |
-| `/tickets/{id}/interactions` | `POST`      | `201`   | `400`, `404`, `409` | Adicionar uma mensagem/interação no histórico |
+| Rota                       | Método HTTP | Sucesso | Erros               | Funcionalidade                                |
+| -------------------------- | ----------- | ------- | ------------------- | --------------------------------------------- |
+| `/ticket/{id}/interaction` | `POST`      | `201`   | `400`, `404`, `409` | Adicionar uma mensagem/interação no histórico |
 
 > [!NOTE]
 >
@@ -272,8 +272,6 @@ A propriedade `spring.jpa.hibernate.ddl-auto=update` faz com que o Hibernate com
 Em ambientes profissionais e de produção, adota-se o bloqueio de criação automática via JPA (`spring.jpa.hibernate.ddl-auto=validate`), delegando a evolução do esquema exclusivamente a ferramentas de migração explícitas e versionadas como o Flyway.
 
 ## Documentação
-
-A documentação detalhada do frontend está em [`docs/`](docs/):
 
 | Documento             | Descrição                                                             |
 | --------------------- | --------------------------------------------------------------------- |

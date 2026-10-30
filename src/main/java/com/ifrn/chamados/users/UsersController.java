@@ -66,9 +66,9 @@ public class UsersController {
         content = @Content(schema = @Schema(hidden = true))
     )
     public ResponseEntity<Page<UserResponseDTO>> list(
-        @RequestParam(required = false, name = "nome") String name,
-        @RequestParam(required = false, name = "tipo") UserType userType,
-        @RequestParam(required = false, name = "setorId") Long departmentId,
+        @RequestParam(required = false, name = "name") String name,
+        @RequestParam(required = false, name = "userType") UserType userType,
+        @RequestParam(required = false, name = "departmentId") Long departmentId,
         @ParameterObject 
         @PageableDefault(size = 10, sort = "name") Pageable pageable) {
         Page<Users> usersPage = usersService.findAllFiltered(name, userType, departmentId, pageable);
@@ -91,7 +91,7 @@ public class UsersController {
         return ResponseEntity.ok(UserResponseDTO.fromEntity(searched));
     }
 
-    @GetMapping("/{id}/chamados")
+    @GetMapping("/{id}/ticket")
     @ApiResponse(
         responseCode = "200", 
         description = "Chamados atribuídos a um solicitante ou técnico encontrados com sucesso", 

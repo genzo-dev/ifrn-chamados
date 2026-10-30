@@ -23,15 +23,15 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
-@RequestMapping("/departments")
+@RequestMapping("/department")
 @RequiredArgsConstructor
 public class DepartmentController {
   private final DepartmentService departmentService;
@@ -87,7 +87,7 @@ public class DepartmentController {
     return ResponseEntity.ok(DepartmentResponseDTO.fromEntity(searched));
   }
 
-  @GetMapping("{id}/categories")
+  @GetMapping("{id}/category")
   @ApiResponse(
     responseCode = "200", 
     description = "Categorias encontradas com sucesso", 
@@ -103,7 +103,7 @@ public class DepartmentController {
     return ResponseEntity.ok(categories);
   }
 
-  @PatchMapping("{id}")
+  @PutMapping ("{id}")
   @ApiResponse(
     responseCode = "200", 
     description = "Departamento atualizado com sucesso", 

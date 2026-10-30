@@ -13,13 +13,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/chamados")
+@RequestMapping("/ticket")
 @RequiredArgsConstructor
 public class InteractionController {
 
     private final InteractionService interactionService;
 
-    @PostMapping("/{id}/interacoes")
+    @PostMapping("/{id}/interaction")
     @ApiResponse(
         responseCode = "201", 
         description = "Interação criada com sucesso", 
