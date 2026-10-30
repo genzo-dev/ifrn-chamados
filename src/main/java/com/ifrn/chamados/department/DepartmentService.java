@@ -12,6 +12,7 @@ import com.ifrn.chamados.category.Category;
 import com.ifrn.chamados.common.utils.EntityFinder;
 import com.ifrn.chamados.department.dto.DepartmentRequestDTO;
 import com.ifrn.chamados.department.dto.DepartmentUpdateDTO;
+import com.ifrn.chamados.ticket.TicketRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -19,6 +20,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class DepartmentService {
   private final DepartmentRepository departmentRepository;
+  private final TicketRepository ticketRepository;
+  
 
   public Department create(DepartmentRequestDTO dto) {
     if (departmentRepository.existsByNameIgnoreCase(dto.name())) {
@@ -62,9 +65,14 @@ public class DepartmentService {
   }
 
   public Department deleteById(Long id) {
-    // TODO: adicionar regra que impeça exclusão em caso de chamado (ticket) vinculado 
-
     Department department = EntityFinder.findByIdOrThrow(departmentRepository, id, "Departamento");
+
+            if (ticketRepository.existsByCategoryDepartmentId(id)) {
+            throw new ResponseStatusException(
+                HttpStatus.CONFLICT, 
+                "Não é possível excluir um setor que possui chamados vinculados."
+            );
+        }
 
     departmentRepository.delete(department);
 

@@ -12,6 +12,10 @@ import com.ifrn.chamados.common.enums.Priority;
 import com.ifrn.chamados.common.enums.Status;
 
 public interface TicketRepository extends JpaRepository<Ticket, Long> {
+    boolean existsByCategoryId(Long categoryId);
+    boolean existsByCategoryDepartmentId(Long departmentId);
+
+
     @Query("""
         SELECT t FROM Ticket t
         WHERE (:status IS NULL OR t.status = :status)
