@@ -2,6 +2,8 @@ package com.ifrn.chamados.ticket;
 
 import java.time.LocalDateTime;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -47,5 +49,29 @@ public class TicketService {
         ticket.setPriority(dto.priority() != null ? dto.priority() : Priority.MEDIA);
 
         return ticketRepository.save(ticket);
+    }
+
+    public Page<Ticket> findAllFiltered(
+            Status status,
+            Priority priority,
+            Long departmentId,
+            Long categoryId,
+            Long requesterId,
+            Long technicianId,
+            LocalDateTime dataInicio,
+            LocalDateTime dataFim,
+            Pageable pageable) {
+
+        return ticketRepository.findWithFilters(
+            status,
+            priority,
+            departmentId,
+            categoryId,
+            requesterId,
+            technicianId,
+            dataInicio,
+            dataFim,
+            pageable
+        );
     }
 }
